@@ -1,10 +1,12 @@
 #include <iostream>
+#include "Graph.h"
+
 using namespace std;
 
 class Circuit {
     int ViaCost, Spacing, N_MetalLayers, N_RoutedShapes, N_RoutedVias, N_Obstacles;
-    int g;          // Grafo
-    int Boundary;   // Retângulo
+    Graph g;  // Grafo
+    int Boundary;       // Retângulo
 
     public:
         void input_to_objects();

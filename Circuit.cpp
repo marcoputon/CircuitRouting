@@ -2,5 +2,5 @@
 #include <iostream>
 
 void Circuit::draw(){
-    cout << "perdi\n";
+    g.add_edge(1, 2, 3);
 }
