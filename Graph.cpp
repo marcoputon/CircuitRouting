@@ -2,7 +2,7 @@
 
 
 void Graph::add_vertex(Vertex u){
-    Vertex_list.insert(u);
+    Vertex_list.push_back(u);
 }
 
 void Graph::add_edge(Vertex u, Vertex v, int w){
@@ -10,5 +10,9 @@ void Graph::add_edge(Vertex u, Vertex v, int w){
     e.u = u;
     e.v = v;
     e.w = w;
-    Edge_list.insert(e);
+    Edge_list.push_back(e);
+}
+
+vector<Vertex> Graph::vertex_set(){
+    return Vertex_list;
 }

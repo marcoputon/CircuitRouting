@@ -1,6 +1,7 @@
 #include <vector>
 #include <array>
 
+using namespace std;
 
 typedef array<int, 3> Vertex;
 
@@ -18,4 +19,5 @@ class Graph{
     public:
         void add_edge(Vertex, Vertex, int);
         void add_vertex(Vertex);
+        vector<Vertex> vertex_set();
 };

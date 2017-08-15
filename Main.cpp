@@ -1,26 +1,16 @@
 #include <iostream>
-#include <list>
-#include <vector>
-#include <array>
-
-using namespace std;
-
-typedef array<int, 3> Vertex;
-
-typedef struct edge{
-    Vertex u;
-    Vertex v;
-} Edge;
-
+#include "Graph.h"
 
 
 int main(){
+    Graph g;
 
-    Edge e;
-    e.u = {1, 2, 3};
-    e.v = {5, 6, 7};
+    g.add_vertex({1, 2, 3});
+    g.add_vertex({3, 0, -1});
 
-    cout << e.u[0] << "\n";
+    for(Vertex v : g.vertex_set()){
+        std::cout << "(" << v[0] << ", " << v[1] << ", " <<  v[2] << ")\n";
+    }
 
     return 0;
 }
