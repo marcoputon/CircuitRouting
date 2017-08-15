@@ -1,12 +1,21 @@
-#include <boost/graph/adjacency_list.hpp>
+#include <vector>
+#include <array>
 
-typedef boost::property<boost::edge_weight_t, int> EdgeWeightProperty;
-typedef boost::adjacency_list<boost::listS, boost::vecS, boost::undirectedS, boost::no_property, EdgeWeightProperty> UndirectedGraph;
-typedef boost::graph_traits<UndirectedGraph>::edge_iterator edge_iterator;
+
+typedef array<int, 3> Vertex;
+
+typedef struct edge{
+    Vertex u;
+    Vertex v;
+    int w;
+} Edge;
+
 
 class Graph{
-    UndirectedGraph g;
+    vector<Vertex> Vertex_list;
+    vector<Edge> Edge_list;
 
     public:
-        void add_edge(int, int, int);
+        void add_edge(Vertex, Vertex, int);
+        void add_vertex(Vertex);
 };
