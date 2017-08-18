@@ -35,6 +35,8 @@ struct G {
     void add_edge(Vertex, Vertex, int);
 
     void print_vertices();
+
+    void print_Vertex_map();
 };
 
 

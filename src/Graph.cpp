@@ -19,19 +19,26 @@ void G::add_edge(Vertex u, Vertex v, int w){
 };
 
 
-void print_edges(std::vector <E> spanning_tree, G graph){
-    for (std::vector <E>::iterator ei = spanning_tree.begin(); ei != spanning_tree.end(); ++ei) {
-        std::cout << source(*ei, graph.g) << " <--> " << target(*ei, graph.g)
-                  << " with weight of " << get(edge_weight, graph.g, *ei)
-                  << std::endl;
-    }
-}
-
-
 void G::print_vertices(){
     std::pair<VI, VI> v_set = vertices(this->g);
 
     for (VI vi = v_set.first; vi != v_set.second; ++vi) {
         std::cout << *vi << std::endl;
+    }
+}
+
+
+void G::print_Vertex_map(){
+    for (std::map<Vertex,V>::iterator it = Vertex_map.begin(); it != Vertex_map.end(); ++it){
+        std::cout << "(" << it->first[0] << ", " << it->first[1] << ", " << it->first[2] << ") => " << it->second << '\n';
+    }
+}
+
+
+void print_edges(std::vector <E> spanning_tree, G graph){
+    for (std::vector <E>::iterator ei = spanning_tree.begin(); ei != spanning_tree.end(); ++ei) {
+        std::cout << source(*ei, graph.g) << " <--> " << target(*ei, graph.g)
+                  << " with weight of " << get(edge_weight, graph.g, *ei)
+                  << std::endl;
     }
 }

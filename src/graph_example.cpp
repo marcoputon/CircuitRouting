@@ -21,11 +21,14 @@ int main() {
     graph.add_edge(u4, u1, 4);
     graph.add_edge(u1, u3, 3);
 
+    std::cout << "Vertices:\n";
     graph.print_vertices();
+    std::cout << "\nVertex_map:\n";
+    graph.print_Vertex_map();
 
     kruskal_minimum_spanning_tree(graph.g, std::back_inserter(spanning_tree));
 
-    std::cout << "\n";
+    std::cout << "\nSpanning_tree\n";
     print_edges(spanning_tree, graph);
 
 
