@@ -6,9 +6,9 @@
 using namespace boost;
 
 
+
 // Vértice é um array de tamanho 3
 typedef std::array<int, 3> Vertex;
-
 
 // Grafo é uma lista de adjacencia com lista de vértices, arestas, não dirigido e com peso nas arestas
 typedef adjacency_list <vecS, vecS, undirectedS, no_property, property <edge_weight_t, int>> Graph;
@@ -18,12 +18,18 @@ typedef graph_traits <Graph>::edge_descriptor E;
 typedef graph_traits <Graph>::vertex_descriptor V;
 typedef graph_traits <Graph>::vertex_iterator VI;
 
+// get the property map for vertex indices
+typedef property_map<Graph, vertex_index_t>::type IndexMap;
+
 
 
 //  Estrutura do Grafo
 struct G {
     Graph g;
     std::map<Vertex, V> Vertex_map;
+    IndexMap index;
+
+    G();
 
     //  Adiciona o vértice no mapa de vértices tendo como chave o vertex_descriptor
     void add_vertex(Vertex);
@@ -40,4 +46,6 @@ struct G {
 };
 
 
+
+//  Isso não deve ficar aqui
 void print_edges(std::vector<E>, G);

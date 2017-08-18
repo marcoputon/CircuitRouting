@@ -9,11 +9,13 @@ int main() {
     Vertex u2 = {3, 5, 4};
     Vertex u3 = {6, 6, 6};
     Vertex u4 = {6, 6, 7};
+    Vertex u5 = {1, 1, 1};
 
     graph.add_vertex(u1);
     graph.add_vertex(u2);
     graph.add_vertex(u3);
     graph.add_vertex(u4);
+    graph.add_vertex(u5);
 
     graph.add_edge(u1, u2, 1);
     graph.add_edge(u2, u3, 2);
@@ -21,10 +23,14 @@ int main() {
     graph.add_edge(u4, u1, 4);
     graph.add_edge(u1, u3, 3);
 
-    std::cout << "Vertices:\n";
     graph.print_vertices();
-    std::cout << "\nVertex_map:\n";
     graph.print_Vertex_map();
+        std::cout << "\n";
+        graph.remove_vertex(u3);
+        std::cout << "\n";
+    graph.print_vertices();
+    graph.print_Vertex_map();
+
 
     kruskal_minimum_spanning_tree(graph.g, std::back_inserter(spanning_tree));
 
