@@ -1,4 +1,5 @@
 #include "Graph.h"
+#include "iostream"
 
 int main() {
     G graph;
@@ -19,6 +20,8 @@ int main() {
     graph.add_edge(u3, u4, 5);
     graph.add_edge(u4, u1, 4);
     graph.add_edge(u1, u3, 3);
+
+    graph.print_vertices();
 
     kruskal_minimum_spanning_tree(graph.g, std::back_inserter(spanning_tree));
 

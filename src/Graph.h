@@ -16,6 +16,8 @@ typedef adjacency_list <vecS, vecS, undirectedS, no_property, property <edge_wei
 // Bagulhos pra iterar nas arestas e vértices
 typedef graph_traits <Graph>::edge_descriptor E;
 typedef graph_traits <Graph>::vertex_descriptor V;
+typedef graph_traits <Graph>::vertex_iterator VI;
+
 
 
 //  Estrutura do Grafo
@@ -26,9 +28,13 @@ struct G {
     //  Adiciona o vértice no mapa de vértices tendo como chave o vertex_descriptor
     void add_vertex(Vertex);
 
+    void remove_vertex(Vertex);
+
     //  Acho que vai bugar se adicionar aresta com vertices não contidos no Grafo
     //  porque não vai adicionar no Vertex_map os novos vértices.
     void add_edge(Vertex, Vertex, int);
+
+    void print_vertices();
 };
 
 
