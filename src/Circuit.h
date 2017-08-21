@@ -1,15 +1,17 @@
 #include <iostream>
-#include "Graph.h"
+#include <string>
+#include "Layer.h"
 
 using namespace std;
 
 class Circuit {
     int ViaCost, Spacing, N_MetalLayers, N_RoutedShapes, N_RoutedVias, N_Obstacles;
-    Graph g;  // Grafo
-    int Boundary;       // Retângulo
+    Graph g; // Grafo
+    int Boundary; // Retângulo
+    std::map<string, Layer> Layers;
 
     public:
-        void input_to_objects();
+        void input_to_objects(string);
         void move_obstacles_points();
         void generate_hanan_grid();
         void add_zero_edges_to_components();

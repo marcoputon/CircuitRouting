@@ -1,9 +1,13 @@
 #include <iostream>
+#include "Graph.h"
 using namespace std;
 
-class Shape {
-    int rectangle;
+struct Shape {
+    Vertex A;
+    Vertex B;
+    Vertex C;
+    Vertex D;
 
-    public:
-        void draw();
+
+    void draw();
 };
