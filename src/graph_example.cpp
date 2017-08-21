@@ -4,38 +4,25 @@
 int main() {
     G graph;
     std::vector <E> spanning_tree;
+/*
+*/
+    Vertex u0 = {0, 0, 0};
+    Vertex u1 = {1, 1, 1};
+    Vertex u2 = {2, 2, 2};
+    Vertex u3 = {3, 3, 3};
+    Vertex u4 = {4, 4, 4};
 
-    Vertex u1 = {1, 2, 1};
-    Vertex u2 = {3, 5, 4};
-    Vertex u3 = {6, 6, 6};
-    Vertex u4 = {6, 6, 7};
-    Vertex u5 = {1, 1, 1};
-
-    graph.add_vertex(u1);
-    graph.add_vertex(u2);
-    graph.add_vertex(u3);
-    graph.add_vertex(u4);
-    graph.add_vertex(u5);
-
-    graph.add_edge(u1, u2, 1);
-    graph.add_edge(u2, u3, 2);
-    graph.add_edge(u3, u4, 5);
-    graph.add_edge(u4, u1, 4);
-    graph.add_edge(u1, u3, 3);
-
-    graph.print_vertices();
+    graph.add_vertex_to_map(u0);
+    graph.add_vertex_to_map(u1);
+    graph.add_vertex_to_map(u2);
+    graph.add_vertex_to_map(u3);
+    graph.add_vertex_to_map(u4);
     graph.print_Vertex_map();
-        std::cout << "\n";
-        graph.remove_vertex(u3);
-        std::cout << "\n";
-    graph.print_vertices();
-    graph.print_Vertex_map();
+    std::cout << "\n";
 
-
-    kruskal_minimum_spanning_tree(graph.g, std::back_inserter(spanning_tree));
-
-    std::cout << "\nSpanning_tree\n";
-    print_edges(spanning_tree, graph);
+    graph.add_edge_to_vec(u0, u1, 2);
+    graph.add_edge_to_vec(u1, u2, 2);
+    graph.print_edges();
 
 
     return 0;

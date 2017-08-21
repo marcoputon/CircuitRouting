@@ -7,22 +7,34 @@ G::G(){
 }
 
 
-void G::add_vertex(Vertex v) {
-    V vd = boost::add_vertex(g);
-    Vertex_map[v] = vd;
+//  -1 para vértices não inicializados
+void G::add_vertex_to_map(Vertex v) {
+    this->Vertex_map[v] = -1;
 }
 
 
-void G::remove_vertex(Vertex v) {
-    boost::remove_vertex(Vertex_map[v], g);
-    Vertex_map.erase(v);
+void G::add_edge_to_vec(Vertex u, Vertex v, int w) {
+    Edge e;
+        e.u = u;
+        e.v = v;
+        e.w = w;
+    this->Edges.push_back(e);
 }
 
 
+//  Modificar para remover apenas do mapa
+void G::remove_vertex_from_map(Vertex v) {
+    this->Vertex_map.erase(v);
+}
+
+
+//  Modidicar para (não sei ainda)
 void G::add_edge(Vertex u, Vertex v, int w) {
     boost::add_edge(Vertex_map[u], Vertex_map[v], w, g);
 }
 
+
+//  PRINT ----------------------------------------------------------------------------------------------------------------
 
 void G::print_vertices() {
     std::pair<VI, VI> vi;
@@ -30,6 +42,15 @@ void G::print_vertices() {
     for (vi = vertices(this->g); vi.first != vi.second; ++vi.first) {
         V vd = *vi.first;
         std::cout << index[vd] << std::endl;
+    }
+}
+
+
+void G::print_edges(){
+    for (Edge e : this->Edges){
+        std::cout << "(" << e.u[0] << ", " << e.u[1] << ", " << e.u[2] << ") - ("
+                         << e.v[0] << ", " << e.v[1] << ", " << e.v[2] << ") - "
+                         << e.w << "\n";
     }
 }
 
