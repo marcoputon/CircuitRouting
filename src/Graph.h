@@ -28,7 +28,6 @@ typedef graph_traits <Graph>::vertex_iterator VI;
 typedef property_map<Graph, vertex_index_t>::type IndexMap;
 
 
-
 //  Estrutura do Grafo
 struct G {
     Graph g;
@@ -54,7 +53,6 @@ struct G {
     void print_edges();
 
 };
-
 
 
 //  Isso não deve ficar aqui
