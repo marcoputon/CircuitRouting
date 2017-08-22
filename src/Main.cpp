@@ -4,11 +4,11 @@
 #include "Circuit.h"
 
 
-int main(){
+int main(int argc, char* argv[]){
     Circuit C;
-    C.input_to_objects("../cases/case-1");
+    C.input_to_objects(argv[1]);
     C.move_obstacles_points();
-    C.generate_hanan_grid();
+    G g = C.generate_hanan_grid();
 
     return 0;
 }

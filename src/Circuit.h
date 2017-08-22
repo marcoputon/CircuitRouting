@@ -14,7 +14,7 @@ class Circuit {
     public:
         void input_to_objects(string);
         void move_obstacles_points();
-        void generate_hanan_grid();
+        G generate_hanan_grid();
         void add_zero_edges_to_components();
         void remove_collided_points_with_obstacles();
         void connect_all_components();

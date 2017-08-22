@@ -59,3 +59,5 @@ struct G {
 
 //  Isso não deve ficar aqui
 void print_edges(std::vector<E>, G);
+
+int euclidian_dist(Vertex, Vertex);

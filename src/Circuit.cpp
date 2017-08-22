@@ -90,10 +90,10 @@ void Circuit::move_obstacles_points() {
 }
 
 
-void Circuit::generate_hanan_grid() {
+G Circuit::generate_hanan_grid() {
     std::map<int, bool> X;
     std::map<int, bool> Y;
-    std::map<Vertex, bool> vertices;
+    std::map<Vertex, V> vertices;
     std::vector<Edge> grid;
 
     // Pega todos os pontos
@@ -124,19 +124,52 @@ void Circuit::generate_hanan_grid() {
         }
     }
 
-    // Cria os pontos da grade de hanan
-    for (std::map<int, bool>::iterator it = X.begin(); it != X.end(); ++it) {
-        for (std::map<int, bool>::iterator it_f = Y.begin(); it_f != Y.end(); ++it_f) {
-            vertices[{it->first, it_f->first, 0}] = 1;
+
+    // Adiciona as arestas entre os vizinhos
+    for (std::map<int, bool>::iterator it_x = X.begin(); it_x != X.end(); ++it_x) {
+        for (std::map<int, bool>::iterator it_y = Y.begin(); it_y != Y.end(); ++it_y) {
+            std::map<int, bool>::iterator it_yp = it_y;
+            ++it_yp;
+            if (it_yp == Y.end()) {
+                break;
+            }
+
+            Vertex u = {it_x->first, it_y->first, 0};
+            Vertex v = {it_x->first, it_yp->first, 0};
+
+            Edge e;
+            e.u = u;
+            e.v = v;
+            e.w = euclidian_dist(u, v);
+            grid.push_back(e);
+            vertices[{it_x->first, it_y->first, 0}] = 1;
+            vertices[{it_x->first, it_yp->first, 0}] = 1;
         }
     }
 
+
     // Adiciona as arestas entre os vizinhos
-    // ...
+    for (std::map<int, bool>::iterator it_y = Y.begin(); it_y != Y.end(); ++it_y) {
+        for (std::map<int, bool>::iterator it_x = X.begin(); it_x != X.end(); ++it_x) {
+            std::map<int, bool>::iterator it_xp = it_x;
+            ++it_xp;
+            if (it_xp == X.end()) {
+                break;
+            }
 
+            Vertex u = {it_x->first, it_y->first, 0};
+            Vertex v = {it_xp->first, it_y->first, 0};
 
-    for (std::map<Vertex, bool>::iterator it = vertices.begin(); it != vertices.end(); ++it) {
-        print_v(it->first);
+            Edge e;
+            e.u = u;
+            e.v = v;
+            e.w = euclidian_dist(u, v);
+            grid.push_back(e);
+        }
     }
-    std::cout << vertices.size() << "\n";
+
+    G g;
+    g.Vertex_map = vertices;
+    g.Edges = grid;
+    return g;
 }
