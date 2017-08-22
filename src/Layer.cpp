@@ -46,9 +46,8 @@ void Layer::add_via(std::vector<string> line) {
 }
 
 void Layer::move_obstacles_points() {
-    for (int i = 0; i < this->Obstacles.size(); i++) {
+    for (int i = 0; i < (int)this->Obstacles.size(); i++) {
         Shape obs = Obstacles.at(i);
-        std::cout << "Perdi\n";
         Obstacles.at(i).A = {obs.A[0] - 1, obs.A[1] + 1, obs.A[2]};
         Obstacles.at(i).B = {obs.B[0] + 1, obs.B[1] + 1, obs.B[2]};
         Obstacles.at(i).C = {obs.C[0] + 1, obs.C[1] - 1, obs.C[2]};

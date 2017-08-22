@@ -88,3 +88,55 @@ void Circuit::move_obstacles_points() {
         it->second.move_obstacles_points();
     }
 }
+
+
+void Circuit::generate_hanan_grid() {
+    std::map<int, bool> X;
+    std::map<int, bool> Y;
+    std::map<Vertex, bool> vertices;
+    std::vector<Edge> grid;
+
+    // Pega todos os pontos
+    for (std::map<string, Layer>::iterator it = Layers.begin(); it != Layers.end(); ++it) {
+        for (Shape c : it->second.Components) {
+            X[c.A[0]] = 1;
+            Y[c.A[1]] = 1;
+            X[c.B[0]] = 1;
+            Y[c.B[1]] = 1;
+            X[c.C[0]] = 1;
+            Y[c.C[1]] = 1;
+            X[c.D[0]] = 1;
+            Y[c.D[1]] = 1;
+        }
+        for (Shape o : it->second.Obstacles) {
+            X[o.A[0]] = 1;
+            Y[o.A[1]] = 1;
+            X[o.B[0]] = 1;
+            Y[o.B[1]] = 1;
+            X[o.C[0]] = 1;
+            Y[o.C[1]] = 1;
+            X[o.D[0]] = 1;
+            Y[o.D[1]] = 1;
+        }
+        for (Via v : it->second.Vias) {
+            X[v.point[0]] = 1;
+            Y[v.point[1]] = 1;
+        }
+    }
+
+    // Cria os pontos da grade de hanan
+    for (std::map<int, bool>::iterator it = X.begin(); it != X.end(); ++it) {
+        for (std::map<int, bool>::iterator it_f = Y.begin(); it_f != Y.end(); ++it_f) {
+            vertices[{it->first, it_f->first, 0}] = 1;
+        }
+    }
+
+    // Adiciona as arestas entre os vizinhos
+    // ...
+
+
+    for (std::map<Vertex, bool>::iterator it = vertices.begin(); it != vertices.end(); ++it) {
+        print_v(it->first);
+    }
+    std::cout << vertices.size() << "\n";
+}
