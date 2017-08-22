@@ -10,9 +10,9 @@ void Circuit::draw(){
     for (std::map<string, Layer>::iterator it = Layers.begin(); it != Layers.end(); ++it) {
         std::cout << it->first << ":\n";
         std::cout << "Shapes:\n";
-        it->second.print_shapes(0);
-        std::cout << "Obstacles:\n";
         it->second.print_shapes(1);
+        std::cout << "Obstacles:\n";
+        it->second.print_shapes(0);
         std::cout << "Vias:\n";
         it->second.print_vias();
         std::cout << "\n";
@@ -80,4 +80,11 @@ void Circuit::input_to_objects(string case_path){
     }
 
     fs.close();
+}
+
+
+void Circuit::move_obstacles_points() {
+    for (std::map<string, Layer>::iterator it = Layers.begin(); it != Layers.end(); ++it) {
+        it->second.move_obstacles_points();
+    }
 }

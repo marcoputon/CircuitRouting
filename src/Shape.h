@@ -10,6 +10,5 @@ struct Shape {
     Vertex C;
     Vertex D;
 
-
     void draw();
 };
