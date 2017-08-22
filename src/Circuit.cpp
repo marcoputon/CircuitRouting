@@ -90,7 +90,7 @@ void Circuit::move_obstacles_points() {
 }
 
 
-G Circuit::generate_hanan_grid() {
+void Circuit::generate_hanan_grid() {
     std::map<int, bool> X;
     std::map<int, bool> Y;
     std::map<Vertex, V> vertices;
@@ -125,7 +125,7 @@ G Circuit::generate_hanan_grid() {
     }
 
 
-    // Adiciona as arestas entre os vizinhos
+    // Adiciona as arestas verticais
     for (std::map<int, bool>::iterator it_x = X.begin(); it_x != X.end(); ++it_x) {
         for (std::map<int, bool>::iterator it_y = Y.begin(); it_y != Y.end(); ++it_y) {
             std::map<int, bool>::iterator it_yp = it_y;
@@ -148,7 +148,7 @@ G Circuit::generate_hanan_grid() {
     }
 
 
-    // Adiciona as arestas entre os vizinhos
+    // Adiciona as arestas horizontais
     for (std::map<int, bool>::iterator it_y = Y.begin(); it_y != Y.end(); ++it_y) {
         for (std::map<int, bool>::iterator it_x = X.begin(); it_x != X.end(); ++it_x) {
             std::map<int, bool>::iterator it_xp = it_x;
@@ -171,5 +171,14 @@ G Circuit::generate_hanan_grid() {
     G g;
     g.Vertex_map = vertices;
     g.Edges = grid;
-    return g;
+
+    for (std::map<string, Layer>::iterator it = Layers.begin(); it != Layers.end(); ++it) {
+        it->second.g = g;
+    }
+}
+
+void Circuit::add_zero_edges_to_components(){
+    for (std::map<string, Layer>::iterator it = Layers.begin(); it != Layers.end(); ++it) {
+        it->second.add_zero_edges_to_components();
+    }
 }

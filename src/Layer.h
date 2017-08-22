@@ -7,7 +7,7 @@
 using namespace std;
 
 struct Layer {
-    int g;  // Grafo
+    G g;  // Grafo
     std::vector<Shape> Components;
     std::vector<Shape> Obstacles;
     std::vector<Via> Vias;
@@ -18,6 +18,7 @@ struct Layer {
     void move_obstacles_points();
     void add_zero_edges_to_components();
     void remove_collided_points_with_obstacles();
+    void set_third_coord(int);
     void draw();
 
     void print_shapes(bool);
