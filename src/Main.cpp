@@ -6,7 +6,7 @@
 
 int main(){
     Circuit C;
-    C.input_to_objects("../cases/case0");
+    C.input_to_objects("../cases/case1");
     C.draw();
 
     return 0;

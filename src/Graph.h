@@ -1,3 +1,5 @@
+#define GRAPH_H 1
+
 #include <boost/graph/adjacency_list.hpp>
 #include <boost/graph/kruskal_min_spanning_tree.hpp>
 #include <map>

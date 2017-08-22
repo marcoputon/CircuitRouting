@@ -1,9 +1,11 @@
 #include <iostream>
+#ifndef GRAPH_H
+    #include "Graph.h"
+#endif
 using namespace std;
 
-class Via {
-    int point;
+struct Via {
+    Vertex point;
 
-    public:
-        void draw();
+    void draw();
 };

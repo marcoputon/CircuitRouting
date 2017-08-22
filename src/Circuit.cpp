@@ -7,15 +7,15 @@
 
 
 void Circuit::draw(){
-    std::cout << ViaCost << "\n"
-              << Spacing << "\n"
-              << N_MetalLayers << "\n"
-              << N_RoutedShapes << "\n"
-              << N_RoutedVias << "\n"
-              << N_Obstacles << "\n";
-
     for (std::map<string, Layer>::iterator it = Layers.begin(); it != Layers.end(); ++it) {
-        std::cout << it->first << '\n';
+        std::cout << it->first << ":\n";
+        std::cout << "Shapes:\n";
+        it->second.print_shapes(0);
+        std::cout << "Obstacles:\n";
+        it->second.print_shapes(1);
+        std::cout << "Vias:\n";
+        it->second.print_vias();
+        std::cout << "\n";
     }
 }
 
@@ -56,24 +56,28 @@ void Circuit::input_to_objects(string case_path){
     }
 
 
+    //  Instanciação dos objetos das Layers
     for (int i = 0; i < N_RoutedShapes; i++) {
-        //input.at(i + 7);
         boost::split(strs, input.at(i + 7), boost::is_any_of("\t "));
         Layers[strs.at(1)].add_shape(strs);
     }
 
-
-    //int j = N_RoutedShapes + 7;
+    int j = N_RoutedShapes + 7;
     for (int i = 0; i < N_RoutedVias; i++) {
-        //input.at(j + i);
+        boost::split(strs, input.at(j + i), boost::is_any_of("\t "));
+        Layers["M" + strs.at(1).substr(1, 1)].add_via(strs);
+
+        std::string adj_layer = std::to_string(boost::lexical_cast<int>(strs.at(1).substr(1, 1)) + 1);
+        Layers["M" + adj_layer].add_via(strs);
     }
 
 
-    //j = N_RoutedVias + N_RoutedShapes + 7;
+    j = N_RoutedVias + N_RoutedShapes + 7;
     for (int i = 0; i < N_Obstacles; i++) {
-        //input.at(j + i);
-    }
+        boost::split(strs, input.at(j + i), boost::is_any_of("\t "));
+        Layers[strs.at(1)].add_shape(strs);
 
+    }
 
     fs.close();
 }

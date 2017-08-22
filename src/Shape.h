@@ -1,5 +1,7 @@
 #include <iostream>
-#include "Graph.h"
+#ifndef GRAPH_H
+    #include "Graph.h"
+#endif
 using namespace std;
 
 struct Shape {
