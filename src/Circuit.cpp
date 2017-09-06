@@ -21,6 +21,7 @@ void Circuit::draw(){
 
 
 void Circuit::input_to_objects(string case_path){
+    std::cout << "Generating objects from input\n";
     std::ifstream fs(case_path);
     std::string line,  one, two, three, four;
     std::vector<std::string> input;
@@ -84,6 +85,7 @@ void Circuit::input_to_objects(string case_path){
 
 
 void Circuit::move_obstacles_points() {
+    std::cout << "Moving obstacle points\n";
     for (std::map<string, Layer>::iterator it = Layers.begin(); it != Layers.end(); ++it) {
         it->second.move_obstacles_points();
     }
@@ -91,6 +93,7 @@ void Circuit::move_obstacles_points() {
 
 
 void Circuit::generate_hanan_grid() {
+    std::cout << "Generating hanan grid\n";
     std::map<int, bool> X;
     std::map<int, bool> Y;
     std::map<Vertex, V> vertices;
@@ -178,7 +181,9 @@ void Circuit::generate_hanan_grid() {
 }
 
 void Circuit::add_zero_edges_to_components(){
+    std::cout << "Adding zero edges:\n";
     for (std::map<string, Layer>::iterator it = Layers.begin(); it != Layers.end(); ++it) {
+        std::cout << "   " << it->first << ":\n";
         it->second.add_zero_edges_to_components();
     }
 }

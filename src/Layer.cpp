@@ -92,22 +92,11 @@ void Layer::add_zero_edges_to_components() {
     int s = (int)g.Edges.size();
     for (int i = 0; i < (int)g.Edges.size(); i++) {
         for (Shape c : this->Components) {
-            std::cout << i << "/" << s << "\n";
+            std::cout << "\r      " << i + 1 << "/" << s;
             if (c.collide_with_edge(g.Edges.at(i))) {
                 g.Edges.at(i).w = 0;
             }
         }
     }
-}
-
-// Nao usar
-void Layer::set_third_coord(int z) {
-    V v;
-    std::map<Vertex, V> new_map;
-
-    for (std::map<Vertex, V>::iterator it = g.Vertex_map.begin(); it != g.Vertex_map.end(); ++it) {
-        new_map[{it->first[0], it->first[1], z}] = v;
-    }
-
-    this->g.Vertex_map = new_map;
+    std::cout << "\n";
 }
