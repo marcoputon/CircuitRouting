@@ -174,6 +174,7 @@ void Circuit::generate_hanan_grid() {
     G g;
     g.Vertex_map = vertices;
     g.Edges = grid;
+    std::cout << "NUM: " << g.Vertex_map.size() << "\n";
 
     for (std::map<string, Layer>::iterator it = Layers.begin(); it != Layers.end(); ++it) {
         it->second.g = g;

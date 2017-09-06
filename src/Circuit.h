@@ -7,7 +7,7 @@ using namespace std;
 
 struct Circuit {
     int ViaCost, Spacing, N_MetalLayers, N_RoutedShapes, N_RoutedVias, N_Obstacles;
-    Graph g; // Grafo
+    G g; // Grafo
     int Boundary; // Retângulo
     std::map<string, Layer> Layers;
 

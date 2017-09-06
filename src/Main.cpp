@@ -12,7 +12,6 @@ int main(int argc, char* argv[]){
     C.add_zero_edges_to_components();
 
 
-
     string p = "print";
     if (argv[2] == p) {
         for (std::map<string, Layer>::iterator it = C.Layers.begin(); it != C.Layers.end(); ++it) {
