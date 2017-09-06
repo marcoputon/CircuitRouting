@@ -88,6 +88,7 @@ void Layer::print_vias() {
 }
 
 
+// N_arestas * N_pontos | MUDAR
 void Layer::add_zero_edges_to_components() {
     int s = (int)g.Edges.size();
     for (int i = 0; i < (int)g.Edges.size(); i++) {
@@ -100,3 +101,39 @@ void Layer::add_zero_edges_to_components() {
     }
     std::cout << "\n";
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//

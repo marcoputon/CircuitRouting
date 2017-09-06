@@ -9,6 +9,7 @@ int main(int argc, char* argv[]){
     C.input_to_objects(argv[1]);
     C.move_obstacles_points();
     C.generate_hanan_grid();
+    C.Layers["M1"].g.print_Vertex_map();
     C.add_zero_edges_to_components();
 
 
