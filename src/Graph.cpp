@@ -13,6 +13,11 @@ void G::add_vertex_to_map(Vertex v) {
     this->Vertex_map[v] = -1;
 }
 
+void G::add_vertex(Vertex v) {
+    V vi = boost::add_vertex(this->g);
+    this->Vertex_map[v] = vi;
+}
+
 
 void G::add_edge_to_vec(Vertex u, Vertex v, int w) {
     Edge e;
@@ -27,6 +32,12 @@ void G::add_edge_to_vec(Vertex u, Vertex v, int w) {
 void G::remove_vertex_from_map(Vertex v) {
     this->Vertex_map.erase(v);
 }
+
+void G::remove_vertex(Vertex v) {
+    boost::remove_vertex(Vertex_map[v], this->g);
+    this->Vertex_map.erase(v);
+}
+
 
 
 //  Modidicar para (não sei ainda)

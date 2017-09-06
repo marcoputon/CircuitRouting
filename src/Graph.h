@@ -45,6 +45,8 @@ struct G {
     void map_to_graph();
 
     void add_vertex_to_map(Vertex);
+    void add_vertex(Vertex);
+    void remove_vertex(Vertex);
     void remove_vertex_from_map(Vertex);
     void print_vertices();
     void print_Vertex_map();
