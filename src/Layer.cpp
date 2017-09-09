@@ -18,10 +18,10 @@ void Layer::add_shape(std::vector<string> line) {
     // Máximo 8 camadas, 1 indice da string
     int z = boost::lexical_cast<int>(line.at(1).substr(1, 1));
 
-    s.A = {vx, uy, z};
-    s.B = {ux, uy, z};
-    s.C = {ux, vy, z};
-    s.D = {vx, vy, z};
+    s.A = {ux, vy, z};
+    s.B = {vx, vy, z};
+    s.C = {vx, uy, z};
+    s.D = {ux, uy, z};
 
     if (line.at(0) == "Obstacle")
         Obstacles.push_back(s);
@@ -88,40 +88,74 @@ void Layer::print_vias() {
 }
 
 
-// N_arestas * N_pontos | MUDAR
-void Layer::add_zero_edges_to_components() {
-    int s = (int)g.Edges.size();
-    for (int i = 0; i < (int)g.Edges.size(); i++) {
-        for (Shape c : this->Components) {
-            std::cout << "\r      " << i + 1 << "/" << s;
-            if (c.collide_with_edge(g.Edges.at(i))) {
-                g.Edges.at(i).w = 0;
+std::vector<Edge> interval (Map_Pair XY, Vertex A, Vertex B, Vertex C) {
+    Vector_Pair inter;
+    std::map<int, bool> X, Y;
+    std::vector<Edge> edges;
+
+    for (std::map<int, bool>::iterator it = XY.first.find(A[0]); it->first != B[0]; ++it) {
+        X[it->first] = 1;
+    }
+    X[B[0]] = 1;
+    for (std::map<int, bool>::iterator it = XY.second.find(C[1]); it->first != B[1]; ++it) {
+        Y[it->first] = 1;
+    }
+    Y[B[1]] = 1;
+
+    // Adiciona as arestas verticais
+    for (std::map<int, bool>::iterator it_x = X.begin(); it_x != X.end(); ++it_x) {
+        for (std::map<int, bool>::iterator it_y = Y.begin(); it_y != Y.end(); ++it_y) {
+            std::map<int, bool>::iterator it_yp = it_y;
+            ++it_yp;
+            if (it_yp == Y.end()) {
+                break;
             }
+
+            Vertex u = {it_x->first, it_y->first, A[2]};
+            Vertex v = {it_x->first, it_yp->first, A[2]};
+
+            Edge e;
+            e.u = u;
+            e.v = v;
+            e.w = 0;
+            edges.push_back(e);
         }
     }
-    std::cout << "\n";
+
+    // Adiciona as arestas horizontais
+    for (std::map<int, bool>::iterator it_y = Y.begin(); it_y != Y.end(); ++it_y) {
+        for (std::map<int, bool>::iterator it_x = X.begin(); it_x != X.end(); ++it_x) {
+            std::map<int, bool>::iterator it_xp = it_x;
+            ++it_xp;
+            if (it_xp == X.end()) {
+                break;
+            }
+
+            Vertex u = {it_x->first, it_y->first, A[2]};
+            Vertex v = {it_xp->first, it_y->first, A[2]};
+
+            Edge e;
+            e.u = u;
+            e.v = v;
+            e.w = 0;
+            edges.push_back(e);
+        }
+    }
+    return edges;
 }
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+void Layer::add_zero_edges_to_components(Map_Pair XY) {
+    std::vector<Edge> inter;
+    int n = this->Components.size();
+    for (Shape c : this->Components) {
+        std::cout << n << "\n";
+        inter = interval(XY, c.A, c.B, c.C);
+        
+        n--;
+    }
+}
 
 
 

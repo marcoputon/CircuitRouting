@@ -1,6 +1,7 @@
 #include <fstream>
 #include <string>
 #include <iostream>
+#include <utility>
 #include "Circuit.h"
 #include <boost/algorithm/string.hpp>
 #include <boost/lexical_cast.hpp>
@@ -92,7 +93,7 @@ void Circuit::move_obstacles_points() {
 }
 
 
-void Circuit::generate_hanan_grid() {
+Map_Pair Circuit::generate_hanan_grid() {
     std::cout << "Generating hanan grid\n";
     std::map<int, bool> X;
     std::map<int, bool> Y;
@@ -179,12 +180,15 @@ void Circuit::generate_hanan_grid() {
     for (std::map<string, Layer>::iterator it = Layers.begin(); it != Layers.end(); ++it) {
         it->second.g = g;
     }
+
+    std::pair<std::map<int, bool>, std::map<int, bool>> XY(X, Y);
+    return XY;
 }
 
-void Circuit::add_zero_edges_to_components(){
+void Circuit::add_zero_edges_to_components(Map_Pair XY){
     std::cout << "Adding zero edges:\n";
     for (std::map<string, Layer>::iterator it = Layers.begin(); it != Layers.end(); ++it) {
         std::cout << "   " << it->first << ":\n";
-        it->second.add_zero_edges_to_components();
+        it->second.add_zero_edges_to_components(XY);
     }
 }

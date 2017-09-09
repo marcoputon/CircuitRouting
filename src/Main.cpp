@@ -5,12 +5,15 @@
 
 
 int main(int argc, char* argv[]){
+    std::pair<std::map<int, bool>, std::map<int, bool>> XY;
     Circuit C;
+
     C.input_to_objects(argv[1]);
     C.move_obstacles_points();
-    C.generate_hanan_grid();
-    C.Layers["M1"].g.print_Vertex_map();
-    C.add_zero_edges_to_components();
+
+    XY = C.generate_hanan_grid();
+
+    C.add_zero_edges_to_components(XY);
 
 
     string p = "print";
@@ -20,6 +23,13 @@ int main(int argc, char* argv[]){
             it->second.g.print_edges();
         }
     }
+
+
+/*
+    for (std::map<int, bool>::iterator it_x = XY.second.begin(); it_x != XY.second.end(); ++it_x) {
+        std::cout << it_x->first << "\n";
+    }
+*/
 
     return 0;
 }

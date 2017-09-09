@@ -9,6 +9,10 @@ using namespace boost;
 
 
 
+
+typedef std::pair<std::map<int, bool>, std::map<int, bool>> Map_Pair;
+typedef std::pair<std::vector<int>, std::vector<int>> Vector_Pair;
+
 // Vértice é um array de tamanho 3
 typedef std::array<int, 3> Vertex;
 
