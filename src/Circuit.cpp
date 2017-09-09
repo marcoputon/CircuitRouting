@@ -100,6 +100,7 @@ Map_Pair Circuit::generate_hanan_grid() {
     std::map<Vertex, V> vertices;
     std::vector<Edge> grid;
 
+    std::cout << "   Getting the coordinates\n";
     // Pega todos os pontos
     for (std::map<string, Layer>::iterator it = Layers.begin(); it != Layers.end(); ++it) {
         for (Shape c : it->second.Components) {
@@ -128,7 +129,8 @@ Map_Pair Circuit::generate_hanan_grid() {
         }
     }
 
-
+    int ci = 1, n_edges = (X.size()-1) * Y.size() + (Y.size()-1) * X.size();
+    std::cout << "   Creating edges\n";
     // Adiciona as arestas verticais
     for (std::map<int, bool>::iterator it_x = X.begin(); it_x != X.end(); ++it_x) {
         for (std::map<int, bool>::iterator it_y = Y.begin(); it_y != Y.end(); ++it_y) {
@@ -148,6 +150,8 @@ Map_Pair Circuit::generate_hanan_grid() {
             grid.push_back(e);
             vertices[{it_x->first, it_y->first, 0}] = 1;
             vertices[{it_x->first, it_yp->first, 0}] = 1;
+            std::cout << "\r      " << ci << "/" << n_edges;
+            ci++;
         }
     }
 
@@ -169,13 +173,15 @@ Map_Pair Circuit::generate_hanan_grid() {
             e.v = v;
             e.w = euclidian_dist(u, v);
             grid.push_back(e);
+            std::cout << "\r      " << ci << "/" << n_edges;
+            ci++;
         }
     }
-
+    std::cout << "\n";
     G g;
     g.Vertex_map = vertices;
     g.Edges = grid;
-    std::cout << "NUM: " << g.Vertex_map.size() << "\n";
+    std::cout << "   Number of vertices: " << g.Vertex_map.size() << "\n";
 
     for (std::map<string, Layer>::iterator it = Layers.begin(); it != Layers.end(); ++it) {
         it->second.g = g;

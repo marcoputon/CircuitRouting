@@ -147,14 +147,16 @@ std::vector<Edge> interval (Map_Pair XY, Vertex A, Vertex B, Vertex C) {
 
 
 void Layer::add_zero_edges_to_components(Map_Pair XY) {
-    std::vector<Edge> inter;
+    std::vector<Edge> z_edges;
     int n = this->Components.size();
+    int count = 1;
     for (Shape c : this->Components) {
-        std::cout << n << "\n";
-        inter = interval(XY, c.A, c.B, c.C);
-        
-        n--;
+        std::cout << "\r      Shape " << count << "/" << n;
+        z_edges = interval(XY, c.A, c.B, c.C);
+
+        count++;
     }
+    std::cout << "\n";
 }
 
 
