@@ -1,12 +1,21 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
+#include <time.h>
 #include "Circuit.h"
 
 
 int main(int argc, char* argv[]){
     std::pair<std::map<int, bool>, std::map<int, bool>> XY;
     Circuit C;
+
+
+    time_t start, end;
+    time(&start);
+    std::cout << start << "\n";
+
+
+
 
     C.input_to_objects(argv[1]);
     C.move_obstacles_points();
@@ -30,6 +39,10 @@ int main(int argc, char* argv[]){
         std::cout << it_x->first << "\n";
     }
 */
+
+    time(&end);
+    double dif = difftime(end, start);
+    std::cout << "\n\nTempo de execução: " << dif << " segundos\n";
 
     return 0;
 }
