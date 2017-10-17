@@ -20,6 +20,7 @@ struct Layer {
     void remove_collided_points_with_obstacles();
     void set_third_coord(int);
     void draw();
+    void save_zero_edges(std::vector<Edge>);
 
     void print_shapes(bool);
     void print_vias();
