@@ -10,7 +10,7 @@ using namespace boost;
 
 
 
-typedef std::pair<std::map<int, bool>, std::map<int, bool>> Map_Pair;
+typedef std::pair<std::set<int>, std::set<int>> Set_Pair;
 typedef std::pair<std::vector<int>, std::vector<int>> Vector_Pair;
 
 // Vértice é um array de tamanho 3
@@ -20,6 +20,8 @@ struct Edge {
     Vertex u;
     Vertex v;
     int w;
+
+    bool operator< (const Edge&) const;
 };
 
 // Grafo é uma lista de adjacencia com lista de vértices, arestas, não dirigido e com peso nas arestas

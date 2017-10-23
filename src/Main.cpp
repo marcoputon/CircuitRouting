@@ -6,7 +6,7 @@
 
 
 int main(int argc, char* argv[]){
-    std::pair<std::map<int, bool>, std::map<int, bool>> XY;
+    std::pair<std::set<int>, std::set<int>> XY;
     Circuit C;
 
 
@@ -21,6 +21,12 @@ int main(int argc, char* argv[]){
     C.move_obstacles_points();
 
     XY = C.generate_hanan_grid();
+    for (int it_x : XY.first) {
+        std::cout << it_x << "\n";
+    }
+    for (int it_y : XY.second) {
+        std::cout << it_y << "\n";
+    }
 
     C.add_zero_edges_to_components(XY);
 
@@ -35,9 +41,6 @@ int main(int argc, char* argv[]){
 
 
 /*
-    for (std::map<int, bool>::iterator it_x = XY.second.begin(); it_x != XY.second.end(); ++it_x) {
-        std::cout << it_x->first << "\n";
-    }
 */
 
     time(&end);

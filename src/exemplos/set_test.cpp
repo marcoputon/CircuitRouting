@@ -40,7 +40,8 @@ int main () {
     edges.insert(create(b, d, 0));
     edges.insert(create(c, d, 0));
 
-    for (Edge e : edges) {
+    for (std::set<Edge>::iterator it = edges.begin(); it != edges.end(); ++it) {
+        Edge e = *it;
         std::cout << "(" << e.u[0] << ", " << e.u[1] << ", " << e.u[2] << ") ("
                   << "(" << e.v[0] << ", " << e.v[1] << ", " << e.v[2] << ")\n";
     }

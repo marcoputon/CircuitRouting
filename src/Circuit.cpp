@@ -93,10 +93,10 @@ void Circuit::move_obstacles_points() {
 }
 
 
-Map_Pair Circuit::generate_hanan_grid() {
+Set_Pair Circuit::generate_hanan_grid() {
     std::cout << "Generating hanan grid\n";
-    std::map<int, bool> X;
-    std::map<int, bool> Y;
+    std::set<int> X;
+    std::set<int> Y;
     std::map<Vertex, V> vertices;
     std::vector<Edge> grid;
 
@@ -104,52 +104,53 @@ Map_Pair Circuit::generate_hanan_grid() {
     // Pega todos os pontos
     for (std::map<string, Layer>::iterator it = Layers.begin(); it != Layers.end(); ++it) {
         for (Shape c : it->second.Components) {
-            X[c.A[0]] = 1;
-            Y[c.A[1]] = 1;
-            X[c.B[0]] = 1;
-            Y[c.B[1]] = 1;
-            X[c.C[0]] = 1;
-            Y[c.C[1]] = 1;
-            X[c.D[0]] = 1;
-            Y[c.D[1]] = 1;
+            X.insert(c.A[0]);
+            Y.insert(c.A[1]);
+            X.insert(c.B[0]);
+            Y.insert(c.B[1]);
+            X.insert(c.C[0]);
+            Y.insert(c.C[1]);
+            X.insert(c.D[0]);
+            Y.insert(c.D[1]);
+
         }
         for (Shape o : it->second.Obstacles) {
-            X[o.A[0]] = 1;
-            Y[o.A[1]] = 1;
-            X[o.B[0]] = 1;
-            Y[o.B[1]] = 1;
-            X[o.C[0]] = 1;
-            Y[o.C[1]] = 1;
-            X[o.D[0]] = 1;
-            Y[o.D[1]] = 1;
+            X.insert(o.A[0]);
+            Y.insert(o.A[1]);
+            X.insert(o.B[0]);
+            Y.insert(o.B[1]);
+            X.insert(o.C[0]);
+            Y.insert(o.C[1]);
+            X.insert(o.D[0]);
+            Y.insert(o.D[1]);
         }
         for (Via v : it->second.Vias) {
-            X[v.point[0]] = 1;
-            Y[v.point[1]] = 1;
+            X.insert(v.point[0]);
+            Y.insert(v.point[1]);
         }
     }
 
     int ci = 1, n_edges = (X.size()-1) * Y.size() + (Y.size()-1) * X.size();
     std::cout << "   Creating edges\n";
     // Adiciona as arestas verticais
-    for (std::map<int, bool>::iterator it_x = X.begin(); it_x != X.end(); ++it_x) {
-        for (std::map<int, bool>::iterator it_y = Y.begin(); it_y != Y.end(); ++it_y) {
-            std::map<int, bool>::iterator it_yp = it_y;
+    for (std::set<int>::iterator it_x = X.begin(); it_x != X.end(); ++it_x) {
+        for (std::set<int>::iterator it_y = Y.begin(); it_y != Y.end(); ++it_y) {
+            std::set<int>::iterator it_yp = it_y;
             ++it_yp;
             if (it_yp == Y.end()) {
                 break;
             }
 
-            Vertex u = {it_x->first, it_y->first, 0};
-            Vertex v = {it_x->first, it_yp->first, 0};
+            Vertex u = {*it_x, *it_y, 0};
+            Vertex v = {*it_x, *it_yp, 0};
 
             Edge e;
             e.u = u;
             e.v = v;
             e.w = euclidian_dist(u, v);
             grid.push_back(e);
-            vertices[{it_x->first, it_y->first, 0}] = 1;
-            vertices[{it_x->first, it_yp->first, 0}] = 1;
+            vertices[{*it_x, *it_y, 0}] = 1;
+            vertices[{*it_x, *it_yp, 0}] = 1;
             std::cout << "\r      " << ci << "/" << n_edges;
             ci++;
         }
@@ -157,16 +158,16 @@ Map_Pair Circuit::generate_hanan_grid() {
 
 
     // Adiciona as arestas horizontais
-    for (std::map<int, bool>::iterator it_y = Y.begin(); it_y != Y.end(); ++it_y) {
-        for (std::map<int, bool>::iterator it_x = X.begin(); it_x != X.end(); ++it_x) {
-            std::map<int, bool>::iterator it_xp = it_x;
+    for (std::set<int>::iterator it_y = Y.begin(); it_y != Y.end(); ++it_y) {
+        for (std::set<int>::iterator it_x = X.begin(); it_x != X.end(); ++it_x) {
+            std::set<int>::iterator it_xp = it_x;
             ++it_xp;
             if (it_xp == X.end()) {
                 break;
             }
 
-            Vertex u = {it_x->first, it_y->first, 0};
-            Vertex v = {it_xp->first, it_y->first, 0};
+            Vertex u = {*it_x, *it_y, 0};
+            Vertex v = {*it_xp, *it_y, 0};
 
             Edge e;
             e.u = u;
@@ -187,11 +188,11 @@ Map_Pair Circuit::generate_hanan_grid() {
         it->second.g = g;
     }
 
-    std::pair<std::map<int, bool>, std::map<int, bool>> XY(X, Y);
+    std::pair<std::set<int>, std::set<int>> XY(X, Y);
     return XY;
 }
 
-void Circuit::add_zero_edges_to_components(Map_Pair XY){
+void Circuit::add_zero_edges_to_components(Set_Pair XY){
     std::cout << "Adding zero edges:\n";
     for (std::map<string, Layer>::iterator it = Layers.begin(); it != Layers.end(); ++it) {
         std::cout << "   " << it->first << ":\n";

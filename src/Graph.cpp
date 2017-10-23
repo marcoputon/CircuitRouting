@@ -8,6 +8,12 @@ G::G(){
 }
 
 
+bool Edge::operator< (const Edge& x) const {
+    return u[0] != x.u[0] || u[1] != x.u[1] || u[2] != x.u[2] ||
+           v[0] != x.v[0] || v[1] != x.v[1] || v[2] != x.v[2];
+}
+
+
 //  -1 para vértices não inicializados
 void G::add_vertex_to_map(Vertex v) {
     this->Vertex_map[v] = -1;

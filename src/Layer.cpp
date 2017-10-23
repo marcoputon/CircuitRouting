@@ -88,67 +88,52 @@ void Layer::print_vias() {
 }
 
 
-std::vector<Edge> interval (Map_Pair XY, Vertex A, Vertex B, Vertex C) {
+
+
+
+
+void print_vertex (Vertex v) {
+    std::cout << "(" << v[0] << ", " << v[1] << ", " << v[2] << ")\n";
+}
+
+
+
+
+std::set<Edge> interval (Set_Pair XY, Vertex A, Vertex B, Vertex C) {
     Vector_Pair inter;
-    std::map<int, bool> X, Y;
-    std::vector<Edge> edges;
+    std::set<int> X, Y;
+    std::set<Edge> edges;
 
-    for (std::map<int, bool>::iterator it = XY.first.find(A[0]); it->first != B[0]; ++it) {
-        X[it->first] = 1;
+    // subX
+    for (std::set<int>::iterator it = XY.first.find(A[0]); it != XY.first.find(B[0]); ++it) {
+        X.insert(*it);
     }
-    X[B[0]] = 1;
-    for (std::map<int, bool>::iterator it = XY.second.find(C[1]); it->first != B[1]; ++it) {
-        Y[it->first] = 1;
+    X.insert(B[0]);
+    // subY
+    for (std::set<int>::iterator it = XY.second.find(C[1]); it != XY.second.find(B[1]); ++it) {
+        Y.insert(*it);
     }
-    Y[B[1]] = 1;
+    Y.insert(B[1]);
 
-    // Adiciona as arestas verticais
-    for (std::map<int, bool>::iterator it_x = X.begin(); it_x != X.end(); ++it_x) {
-        for (std::map<int, bool>::iterator it_y = Y.begin(); it_y != Y.end(); ++it_y) {
-            std::map<int, bool>::iterator it_yp = it_y;
-            ++it_yp;
-            if (it_yp == Y.end()) {
-                break;
-            }
 
-            Vertex u = {it_x->first, it_y->first, A[2]};
-            Vertex v = {it_x->first, it_yp->first, A[2]};
+    // Cria grade de hanan com pesos 0 para X e Y
 
-            Edge e;
-            e.u = u;
-            e.v = v;
-            e.w = 0;
-            edges.push_back(e);
-        }
-    }
-
-    // Adiciona as arestas horizontais
-    for (std::map<int, bool>::iterator it_y = Y.begin(); it_y != Y.end(); ++it_y) {
-        for (std::map<int, bool>::iterator it_x = X.begin(); it_x != X.end(); ++it_x) {
-            std::map<int, bool>::iterator it_xp = it_x;
-            ++it_xp;
-            if (it_xp == X.end()) {
-                break;
-            }
-
-            Vertex u = {it_x->first, it_y->first, A[2]};
-            Vertex v = {it_xp->first, it_y->first, A[2]};
-
-            Edge e;
-            e.u = u;
-            e.v = v;
-            e.w = 0;
-            edges.push_back(e);
-        }
-    }
     return edges;
 }
 
 
 
-void Layer::add_zero_edges_to_components(Map_Pair XY) {
-    std::vector<Edge> z_edges;
+
+
+
+
+/*
+*/
+
+void Layer::add_zero_edges_to_components(Set_Pair XY) {
+    std::set<Edge> z_edges;
     int n = this->Components.size();
+    //std::cout << "Caiu na funcao. Numero de componentes: " << n << "\n";
     int count = 1;
     for (Shape c : this->Components) {
         std::cout << "\r      Shape " << count << "/" << n;
@@ -156,6 +141,7 @@ void Layer::add_zero_edges_to_components(Map_Pair XY) {
 
         count++;
     }
+    //std::cout << "\nPassou do FOR\n";
     std::cout << "\n";
 }
 
