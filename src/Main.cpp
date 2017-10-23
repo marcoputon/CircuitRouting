@@ -32,12 +32,11 @@ int main(int argc, char* argv[]){
     }
 
 
-/*
-*/
-
     time(&end);
     double dif = difftime(end, start);
     std::cout << "\n\nTempo de execução: " << dif << " segundos\n";
+
+
 
     return 0;
 }

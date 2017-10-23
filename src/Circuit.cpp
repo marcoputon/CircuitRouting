@@ -98,7 +98,7 @@ Set_Pair Circuit::generate_hanan_grid() {
     std::set<int> X;
     std::set<int> Y;
     std::map<Vertex, V> vertices;
-    std::vector<Edge> grid;
+    std::set<Edge> grid;
 
     std::cout << "   Getting the coordinates\n";
     // Pega todos os pontos
@@ -148,7 +148,7 @@ Set_Pair Circuit::generate_hanan_grid() {
             e.u = u;
             e.v = v;
             e.w = euclidian_dist(u, v);
-            grid.push_back(e);
+            grid.insert(e);
             vertices[{*it_x, *it_y, 0}] = 1;
             vertices[{*it_x, *it_yp, 0}] = 1;
             std::cout << "\r      " << ci << "/" << n_edges;
@@ -173,7 +173,7 @@ Set_Pair Circuit::generate_hanan_grid() {
             e.u = u;
             e.v = v;
             e.w = euclidian_dist(u, v);
-            grid.push_back(e);
+            grid.insert(e);
             std::cout << "\r      " << ci << "/" << n_edges;
             ci++;
         }

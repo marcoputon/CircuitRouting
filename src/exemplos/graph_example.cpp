@@ -20,8 +20,8 @@ int main() {
     graph.print_Vertex_map();
     std::cout << "\n";
 
-    graph.add_edge_to_vec(u0, u1, 2);
-    graph.add_edge_to_vec(u1, u2, 2);
+    graph.add_edge_to_sec(u0, u1, 2);
+    graph.add_edge_to_sec(u1, u2, 2);
     graph.print_edges();
 
     std::cout << "\n\n\n\n";

@@ -179,6 +179,27 @@ void Layer::add_zero_edges_to_components(Set_Pair XY) {
         std::cout << "\r      Shape " << count << "/" << n;
         z_edges = interval(XY, c.A, c.B, c.C);
 
+        for (Edge e : z_edges) {
+            if (g.Edges.find(e) != g.Edges.end()) {
+                g.Edges.erase(e);  // Peso da aresta errado
+                g.Edges.insert(e); // Peso da aresta certo
+            }
+            else {
+                Edge ie;
+                ie.u = e.v;
+                ie.v = e.u;
+                ie.w = e.w;
+
+                if (g.Edges.find(ie) != g.Edges.end()) {
+                    g.Edges.erase(ie);  // Peso da aresta errado
+                    g.Edges.insert(ie); // Peso da aresta certo
+                }
+                else {
+                    g.Edges.insert(e);
+                }
+            }
+        }
+
         count++;
     }
     //std::cout << "\nPassou do FOR\n";

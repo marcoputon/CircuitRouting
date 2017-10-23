@@ -32,12 +32,12 @@ void G::add_vertex(Vertex v) {
 }
 
 
-void G::add_edge_to_vec(Vertex u, Vertex v, int w) {
+void G::add_edge_to_sec(Vertex u, Vertex v, int w) {
     Edge e;
         e.u = u;
         e.v = v;
         e.w = w;
-    this->Edges.push_back(e);
+    this->Edges.insert(e);
 }
 
 

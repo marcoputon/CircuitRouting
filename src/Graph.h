@@ -44,7 +44,7 @@ struct G {
 
     //  Trabalhar com essas listas antes de usar o grafo
     std::map<Vertex, V> Vertex_map;
-    std::vector <Edge> Edges;
+    std::set <Edge> Edges;
 
 
     G();
@@ -58,7 +58,7 @@ struct G {
     void print_vertices();
     void print_Vertex_map();
 
-    void add_edge_to_vec(Vertex, Vertex, int);
+    void add_edge_to_sec(Vertex, Vertex, int);
     void add_edge(Vertex, Vertex, int);
     void remove_edge_from_map(Edge);
     void print_edges();
