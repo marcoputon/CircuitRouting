@@ -179,10 +179,6 @@ void Layer::add_zero_edges_to_components(Set_Pair XY) {
         std::cout << "\r      Shape " << count << "/" << n;
         z_edges = interval(XY, c.A, c.B, c.C);
 
-        for (Edge e : z_edges) {
-            print_edge(e);
-        }
-
         count++;
     }
     //std::cout << "\nPassou do FOR\n";

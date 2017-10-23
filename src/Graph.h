@@ -22,6 +22,7 @@ struct Edge {
     int w;
 
     bool operator< (const Edge&) const;
+    bool operator== (const Edge&) const;
 };
 
 // Grafo é uma lista de adjacencia com lista de vértices, arestas, não dirigido e com peso nas arestas

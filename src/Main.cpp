@@ -12,9 +12,7 @@ int main(int argc, char* argv[]){
 
     time_t start, end;
     time(&start);
-    std::cout << start << "\n";
-
-
+    //std::cout << start << "\n";
 
 
     C.input_to_objects(argv[1]);

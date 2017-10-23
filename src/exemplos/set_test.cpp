@@ -14,6 +14,13 @@ struct Edge {
         return u[0] != x.u[0] || u[1] != x.u[1] || u[2] != x.u[2] ||
                v[0] != x.v[0] || v[1] != x.v[1] || v[2] != x.v[2];
     }
+
+    bool operator== (const Edge& x) const {
+        return (u[0] == x.u[0] && u[1] == x.u[1] && u[2] == x.u[2] &&
+               v[0] == x.v[0] && v[1] == x.v[1] && v[2] == x.v[2]) ||
+               (u[0] == x.v[0] && u[1] == x.v[1] && u[2] == x.v[2] &&
+                v[0] == x.u[0] && v[1] == x.u[1] && v[2] == x.u[2]);
+    }
 };
 
 Edge create (Vertex u, Vertex v, int w) {
@@ -45,6 +52,9 @@ int main () {
         std::cout << "(" << e.u[0] << ", " << e.u[1] << ", " << e.u[2] << ") ("
                   << "(" << e.v[0] << ", " << e.v[1] << ", " << e.v[2] << ")\n";
     }
+
+    if (create(c, b, 0) == create(b, a, 0)) std::cout << "igual\n";
+    else std::cout << "diferente\n";
 
     return 0;
 }
