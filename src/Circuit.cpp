@@ -191,21 +191,10 @@ Map_Pair Circuit::generate_hanan_grid() {
     return XY;
 }
 
-void change_weight (std::vector<Edge> edges) {
-    for (Edge e : edges) {
-        for () {
-
-        }
-    }
-}
-
 void Circuit::add_zero_edges_to_components(Map_Pair XY){
     std::cout << "Adding zero edges:\n";
     for (std::map<string, Layer>::iterator it = Layers.begin(); it != Layers.end(); ++it) {
         std::cout << "   " << it->first << ":\n";
         it->second.add_zero_edges_to_components(XY);
-
-
     }
-
 }

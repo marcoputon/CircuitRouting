@@ -58,15 +58,11 @@ void G::print_vertices() {
 }
 
 
-void print_edge (Edge e) {
-    std::cout << "(" << e.u[0] << ", " << e.u[1] << ", " << e.u[2] << ") - ("
-              << e.v[0] << ", " << e.v[1] << ", " << e.v[2] << ") - "
-              << e.w << "\n";
-}
-
 void G::print_edges(){
     for (Edge e : this->Edges){
-        print_edge(e);
+        std::cout << "(" << e.u[0] << ", " << e.u[1] << ", " << e.u[2] << ") - ("
+                         << e.v[0] << ", " << e.v[1] << ", " << e.v[2] << ") - "
+                         << e.w << "\n";
     }
 }
 

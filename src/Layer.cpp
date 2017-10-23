@@ -88,8 +88,6 @@ void Layer::print_vias() {
 }
 
 
-// Esse é o carinha que retorna as arestas que devem ter peso 0, mas ainda não
-// modifica o vetor completo de arestas do grafo.
 std::vector<Edge> interval (Map_Pair XY, Vertex A, Vertex B, Vertex C) {
     Vector_Pair inter;
     std::map<int, bool> X, Y;
@@ -147,12 +145,6 @@ std::vector<Edge> interval (Map_Pair XY, Vertex A, Vertex B, Vertex C) {
 }
 
 
-void Layer::save_zero_edges(std::vector<Edge> edges) {
-    for (Edge e : edges) {
-        this->g.add_edge_to_vec(e.u, e.v, e.w);
-    }
-}
-
 
 void Layer::add_zero_edges_to_components(Map_Pair XY) {
     std::vector<Edge> z_edges;
@@ -160,21 +152,12 @@ void Layer::add_zero_edges_to_components(Map_Pair XY) {
     int count = 1;
     for (Shape c : this->Components) {
         std::cout << "\r      Shape " << count << "/" << n;
-
         z_edges = interval(XY, c.A, c.B, c.C);
-        save_zero_edges(z_edges);
 
         count++;
     }
     std::cout << "\n";
 }
-
-
-
-
-
-
-
 
 
 
