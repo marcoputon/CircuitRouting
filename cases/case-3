@@ -5,7 +5,7 @@ Boundary = (0,0) (15,15)
 #RoutedShapes = 2
 #RoutedVias = 1
 #Obstacles = 1
-RoutedShape M1 (1,2) (5,7)
-RoutedShape M2 (10,3) (12,8)
-RoutedVia V1 (11,10)
-Obstacle M2 (7,1) (8,9)
+RoutedShape M1 (10,20) (50,70)
+RoutedShape M2 (100,30) (120,80)
+RoutedVia V1 (110,100)
+Obstacle M2 (70,10) (80,90)

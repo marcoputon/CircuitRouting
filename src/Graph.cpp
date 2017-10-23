@@ -88,6 +88,12 @@ void print_edges(std::vector <E> spanning_tree, G graph) {
     }
 }
 
+void print_edge(Edge e) {
+    std::cout << "(" << e.u[0] << ", " << e.u[1] << ", " << e.u[2] << ") - ("
+                     << e.v[0] << ", " << e.v[1] << ", " << e.v[2] << ") - "
+                     << e.w << "\n";
+}
+
 
 int euclidian_dist(Vertex u, Vertex v) {
     return (sqrt(pow(u[0] - v[0], 2) + pow(u[1] - v[1], 2) + pow(u[2] - v[2], 2)));

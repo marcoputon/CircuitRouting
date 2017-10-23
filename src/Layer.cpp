@@ -118,6 +118,46 @@ std::set<Edge> interval (Set_Pair XY, Vertex A, Vertex B, Vertex C) {
 
     // Cria grade de hanan com pesos 0 para X e Y
 
+    // Adiciona as arestas verticais
+    for (std::set<int>::iterator it_x = X.begin(); it_x != X.end(); ++it_x) {
+        for (std::set<int>::iterator it_y = Y.begin(); it_y != Y.end(); ++it_y) {
+            std::set<int>::iterator it_yp = it_y;
+            ++it_yp;
+            if (it_yp == Y.end()) {
+                break;
+            }
+
+            Vertex u = {*it_x, *it_y, A[2]};
+            Vertex v = {*it_x, *it_yp, A[2]};
+
+            Edge e;
+            e.u = u;
+            e.v = v;
+            e.w = 0;
+            edges.insert(e);
+        }
+    }
+
+    // Adiciona as arestas horizontais
+    for (std::set<int>::iterator it_y = Y.begin(); it_y != Y.end(); ++it_y) {
+        for (std::set<int, bool>::iterator it_x = X.begin(); it_x != X.end(); ++it_x) {
+            std::set<int, bool>::iterator it_xp = it_x;
+            ++it_xp;
+            if (it_xp == X.end()) {
+                break;
+            }
+
+            Vertex u = {*it_x, *it_y, A[2]};
+            Vertex v = {*it_xp, *it_y, A[2]};
+
+            Edge e;
+            e.u = u;
+            e.v = v;
+            e.w = 0;
+            edges.insert(e);
+        }
+    }
+
     return edges;
 }
 
@@ -138,6 +178,10 @@ void Layer::add_zero_edges_to_components(Set_Pair XY) {
     for (Shape c : this->Components) {
         std::cout << "\r      Shape " << count << "/" << n;
         z_edges = interval(XY, c.A, c.B, c.C);
+
+        for (Edge e : z_edges) {
+            print_edge(e);
+        }
 
         count++;
     }

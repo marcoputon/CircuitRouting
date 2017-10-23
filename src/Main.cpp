@@ -21,12 +21,6 @@ int main(int argc, char* argv[]){
     C.move_obstacles_points();
 
     XY = C.generate_hanan_grid();
-    for (int it_x : XY.first) {
-        std::cout << it_x << "\n";
-    }
-    for (int it_y : XY.second) {
-        std::cout << it_y << "\n";
-    }
 
     C.add_zero_edges_to_components(XY);
 
