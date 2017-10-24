@@ -206,15 +206,40 @@ void Circuit::convert_to_boost() {
     //std::map<string, Layer> Layers;
     std::cout << "Converting to boost graph\n";
     for (std::map<string, Layer>::iterator it = Layers.begin(); it != Layers.end(); ++it) {
-        std::cout << "   " << it->first << "\n";
+        std::cout << "   " << it->first << "\n" << "\n";
 
+        int camada = ((int)it->first[1] - 48); // pega o numero da camada (max 8 camadas)
 
-        //std::map<Vertex, V> Vertex_map
-        /*for (std::map<Vertex, V>::iterator lit = it->second.g.Vertex_map.begin(); lit != it->second.g.Vertex_map.end(); ++lit) {
+        // Percorrer set de arestas, adicionar os vértices e as arestas
+        for (Edge e : it->second.g.Edges) {
+            V vd_u, vd_v;
+            E ed;
 
-        }*/
-        it->second.g.print_Vertex_map();
+            e.u[2] = camada;
+            e.v[2] = camada;
+
+            //U
+            if (g.Vertex_map.find(e.u) != g.Vertex_map.end()) {
+                vd_u = g.Vertex_map[e.u];
+            }
+            else {
+                g.add_vertex(e.u);
+                vd_u = g.Vertex_map[e.u];
+            }
+            //V
+            if (g.Vertex_map.find(e.v) != g.Vertex_map.end()) {
+                vd_v = g.Vertex_map[e.v];
+            }
+            else {
+                g.add_vertex(e.v);
+                vd_v = g.Vertex_map[e.v];
+            }
+
+            g.add_edge(vd_u, vd_v, e.w);
+        }
+
     }
+    g.print_Vertex_map();
 }
 
 

@@ -54,8 +54,8 @@ void G::remove_vertex(Vertex v) {
 
 
 //  Modidicar para (não sei ainda)
-void G::add_edge(Vertex u, Vertex v, int w) {
-    boost::add_edge(Vertex_map[u], Vertex_map[v], w, g);
+void G::add_edge(V u, V v, int w) {
+    boost::add_edge(u, v, w, g);
 }
 
 

@@ -59,7 +59,7 @@ struct G {
     void print_Vertex_map();
 
     void add_edge_to_sec(Vertex, Vertex, int);
-    void add_edge(Vertex, Vertex, int);
+    void add_edge(V, V, int);
     void remove_edge_from_map(Edge);
     void print_edges();
 
