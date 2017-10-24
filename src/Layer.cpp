@@ -127,8 +127,8 @@ std::set<Edge> interval (Set_Pair XY, Vertex A, Vertex B, Vertex C) {
                 break;
             }
 
-            Vertex u = {*it_x, *it_y, A[2]};
-            Vertex v = {*it_x, *it_yp, A[2]};
+            Vertex u = {*it_x, *it_y, 0};
+            Vertex v = {*it_x, *it_yp, 0};
 
             Edge e;
             e.u = u;
@@ -147,8 +147,8 @@ std::set<Edge> interval (Set_Pair XY, Vertex A, Vertex B, Vertex C) {
                 break;
             }
 
-            Vertex u = {*it_x, *it_y, A[2]};
-            Vertex v = {*it_xp, *it_y, A[2]};
+            Vertex u = {*it_x, *it_y, 0};
+            Vertex v = {*it_xp, *it_y, 0};
 
             Edge e;
             e.u = u;
@@ -163,39 +163,30 @@ std::set<Edge> interval (Set_Pair XY, Vertex A, Vertex B, Vertex C) {
 /*
 */
 
+bool igual (Vertex u, Vertex v) {
+    return u[0] == v[0] && u[1] == v[1] && u[2] == v[2];
+}
+
 void Layer::add_zero_edges_to_components(Set_Pair XY) {
     std::set<Edge> z_edges;
     int n = this->Components.size();
-    //std::cout << "Caiu na funcao. Numero de componentes: " << n << "\n";
     int count = 1;
     for (Shape c : this->Components) {
         std::cout << "\r      Shape " << count << "/" << n;
         z_edges = interval(XY, c.A, c.B, c.C);
 
+        // Arrumar isso tirando o teste de igualdade e usando o erase em todos os casos
         for (Edge e : z_edges) {
-            if (g.Edges.find(e) != g.Edges.end()) {
-                g.Edges.erase(e);  // Peso da aresta errado
-                g.Edges.insert(e); // Peso da aresta certo
-            }
-            else {
-                Edge ie;
-                ie.u = e.v;
-                ie.v = e.u;
-                ie.w = e.w;
-
-                if (g.Edges.find(ie) != g.Edges.end()) {
-                    g.Edges.erase(ie);  // Peso da aresta errado
-                    g.Edges.insert(ie); // Peso da aresta certo
-                }
-                else {
+            for (Edge ee : g.Edges) { // Eliminar esse laço
+                if (e == ee) {
+                    g.Edges.erase(ee);
                     g.Edges.insert(e);
+                    break;
                 }
             }
         }
-
         count++;
     }
-    //std::cout << "\nPassou do FOR\n";
     std::cout << "\n";
 }
 

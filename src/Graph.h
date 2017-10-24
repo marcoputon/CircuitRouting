@@ -30,6 +30,7 @@ typedef adjacency_list <vecS, vecS, undirectedS, no_property, property <edge_wei
 
 // Bagulhos pra iterar nas arestas e vértices
 typedef graph_traits <Graph>::edge_descriptor E;
+typedef graph_traits <Graph>::edge_iterator EI;
 typedef graph_traits <Graph>::vertex_descriptor V;
 typedef graph_traits <Graph>::vertex_iterator VI;
 
@@ -62,6 +63,7 @@ struct G {
     void add_edge(V, V, int);
     void remove_edge_from_map(Edge);
     void print_edges();
+    void print_edges_set();
 
 };
 

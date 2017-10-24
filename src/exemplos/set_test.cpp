@@ -23,10 +23,8 @@ struct Edge {
     // Nao precisa ficar ordenado, só preciso fazer o set funcionar
     // set usa A==B if (!(A < B) && !(B>A))
     bool operator< (const Edge& x) const {
-        if (!(*this == x)) {
-            return true;
-        }
-        else return false;
+        return u[0] != x.u[0] || u[1] != x.u[1] || u[2] != x.u[2] ||
+               v[0] != x.v[0] || v[1] != x.v[1] || v[2] != x.v[2];
     }
 };
 
@@ -50,7 +48,6 @@ int main () {
 
     edges.insert(create(a, b, 0));
     edges.insert(create(a, c, 0));
-    edges.insert(create(a, b, 1));
     edges.insert(create(b, d, 0));
     edges.insert(create(c, d, 0));
     edges.insert(create(b, a, 0));
@@ -62,7 +59,26 @@ int main () {
     }
 
     if (create(a, b, 0) < create(b, a, 0)) std::cout << "menor\n";
-    else std::cout << "não menor\n";
+    else std::cout << "não menor\n\n\n";
+
+    Edge e1 = create(a, b, 0);
+    Edge e2 = create(a, b, 1);
+    Edge e3 = create(a, d, 1);
+
+
+    if (edges.find(e1) != edges.end()) {
+        std::cout << "Ta na bagaça\n";
+    }
+
+    if (edges.find(e2) != edges.end()) {
+        std::cout << "Ta na bagaça\n";
+    }
+
+    if (edges.find(e3) == edges.end()) {
+        std::cout << "Nao ta na bagaça\n";
+    }
+
+
 
     return 0;
 }

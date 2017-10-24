@@ -1,6 +1,7 @@
 #include "Graph.h"
 #include <iostream>
 #include <math.h>
+#include <utility>
 
 
 G::G(){
@@ -8,16 +9,12 @@ G::G(){
 }
 
 
-bool Edge::operator< (const Edge& x) const {
-    return u[0] != x.u[0] || u[1] != x.u[1] || u[2] != x.u[2] ||
-           v[0] != x.v[0] || v[1] != x.v[1] || v[2] != x.v[2];
+bool Edge::operator< (const Edge& e) const {
+    return (u < e.u) || (u == e.u && v < e.v);
 }
 
 bool Edge::operator== (const Edge& x) const {
-    return (u[0] == x.u[0] && u[1] == x.u[1] && u[2] == x.u[2] &&
-           v[0] == x.v[0] && v[1] == x.v[1] && v[2] == x.v[2]) ||
-           (u[0] == x.v[0] && u[1] == x.v[1] && u[2] == x.v[2] &&
-            v[0] == x.u[0] && v[1] == x.u[1] && v[2] == x.u[2]);
+    return (u == x.u && v == x.v) || (u == x.v && v == x.u);
 }
 
 
@@ -104,4 +101,16 @@ void print_edge(Edge e) {
 
 int euclidian_dist(Vertex u, Vertex v) {
     return (sqrt(pow(u[0] - v[0], 2) + pow(u[1] - v[1], 2) + pow(u[2] - v[2], 2)));
+}
+
+void G::print_edges_set() {
+    // u=source(*ep.first,g);
+    // v=target(*ep.first,g);
+    int i = 0;
+    for (std::pair<EI, EI> ei = boost::edges(g); ei.first != ei.second; ++ei.first) {
+        //std::cout << source(*ei.first, g) << " -> " << target(*ei.first, g) << "\n";
+        std::cout << *ei.first << "\n";
+        i++;
+    }
+    std::cout << "numero de arestas: " << i << "\n";
 }

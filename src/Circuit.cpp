@@ -182,8 +182,8 @@ Set_Pair Circuit::generate_hanan_grid() {
     g.Vertex_map = vertices;
     g.Edges = grid;
     std::cout << "   Number of vertices: " << g.Vertex_map.size() << "\n";
+    std::cout << "   Number of edges: " << grid.size() << "\n";
 
-    // Ta copiando os mesmos vertex_descriptor, arrumar essa bagaça <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
     for (std::map<string, Layer>::iterator it = Layers.begin(); it != Layers.end(); ++it) {
         it->second.g = g;
     }
@@ -203,11 +203,9 @@ void Circuit::add_zero_edges_to_components(Set_Pair XY){
 
 
 void Circuit::convert_to_boost() {
-    //std::map<string, Layer> Layers;
+    int i = 1;
     std::cout << "Converting to boost graph\n";
     for (std::map<string, Layer>::iterator it = Layers.begin(); it != Layers.end(); ++it) {
-        std::cout << "   " << it->first << "\n" << "\n";
-
         int camada = ((int)it->first[1] - 48); // pega o numero da camada (max 8 camadas)
 
         // Percorrer set de arestas, adicionar os vértices e as arestas
@@ -238,8 +236,21 @@ void Circuit::convert_to_boost() {
             g.add_edge(vd_u, vd_v, e.w);
         }
 
+        // Adicionar as arestas das Vias
+        if (i < (int)Layers.size()){
+            for (Via v : it->second.Vias) {
+                Vertex vv = v.point;
+                vv[2] = v.point[2] + 1; // Mesmo ponto, camada adjacente
+                g.add_vertex(vv);
+                g.add_edge(g.Vertex_map[v.point], g.Vertex_map[vv], ViaCost);
+            }
+        }
+        i++;
+        it->second.g.Edges.clear();
     }
-    g.print_Vertex_map();
+
+    //g.print_Vertex_map();
+    //g.print_edges_set();
 }
 
 
