@@ -177,17 +177,11 @@ void Layer::add_zero_edges_to_components(Set_Pair XY) {
 
         // Arrumar isso tirando o teste de igualdade e usando o erase em todos os casos
         for (Edge e : z_edges) {
-            for (Edge ee : g.Edges) { // Eliminar esse laço
-                if (e == ee) {
-                    g.Edges.erase(ee);
-                    g.Edges.insert(e);
-                    break;
-                }
-            }
+            if (g.Edges.find(e) != g.Edges.end()) g.Edges.erase(e);
         }
         count++;
     }
-    std::cout << "\n";
+    std::cout << "\nn edges: " << g.Edges.size() << "\n";
 }
 
 

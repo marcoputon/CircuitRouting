@@ -1,32 +1,8 @@
 #include <iostream>
 #include <set>
 #include <array>
+#include "../Graph.h"
 
-
-typedef std::array<int, 3> Vertex;
-
-struct Edge {
-    Vertex u;
-    Vertex v;
-    int w;
-
-
-    // (u, v, w1) == (v, u, w2)
-    // A == B if (A.u == B.u and A.v == B.v) or (A.u == B.v and A.v == B.u)
-    bool operator== (const Edge& x) const {
-        return (u[0] == x.u[0] && u[1] == x.u[1] && u[2] == x.u[2] &&
-               v[0] == x.v[0] && v[1] == x.v[1] && v[2] == x.v[2]) ||
-               (u[0] == x.v[0] && u[1] == x.v[1] && u[2] == x.v[2] &&
-                v[0] == x.u[0] && v[1] == x.u[1] && v[2] == x.u[2]);
-    }
-
-    // Nao precisa ficar ordenado, só preciso fazer o set funcionar
-    // set usa A==B if (!(A < B) && !(B>A))
-    bool operator< (const Edge& x) const {
-        return u[0] != x.u[0] || u[1] != x.u[1] || u[2] != x.u[2] ||
-               v[0] != x.v[0] || v[1] != x.v[1] || v[2] != x.v[2];
-    }
-};
 
 Edge create (Vertex u, Vertex v, int w) {
     Edge new_e;
@@ -36,7 +12,6 @@ Edge create (Vertex u, Vertex v, int w) {
     return new_e;
 }
 
-
 int main () {
     std::set<Edge> edges;
 
@@ -45,40 +20,25 @@ int main () {
     Vertex c = {3, 3, 3};
     Vertex d = {4, 4, 4};
 
+    Edge e1 = create(a, b, 0);
+    Edge e2 = create(a, c, 0);
+    Edge e3 = create(c, d, 0);
+    Edge e4 = create(b, a, 0);
 
-    edges.insert(create(a, b, 0));
-    edges.insert(create(a, c, 0));
-    edges.insert(create(b, d, 0));
-    edges.insert(create(c, d, 0));
-    edges.insert(create(b, a, 0));
+    edges.insert(e1);
+    edges.insert(e2);
+    edges.insert(e3);
+    edges.insert(e4);
 
     for (std::set<Edge>::iterator it = edges.begin(); it != edges.end(); ++it) {
         Edge e = *it;
-        std::cout << "(" << e.u[0] << ", " << e.u[1] << ", " << e.u[2] << ") ("
-                  << "(" << e.v[0] << ", " << e.v[1] << ", " << e.v[2] << ") w:" << e.w << "\n";
+        print_edge(e);
     }
 
-    if (create(a, b, 0) < create(b, a, 0)) std::cout << "menor\n";
-    else std::cout << "não menor\n\n\n";
+    Edge ed = create(a, b, 2);
 
-    Edge e1 = create(a, b, 0);
-    Edge e2 = create(a, b, 1);
-    Edge e3 = create(a, d, 1);
-
-
-    if (edges.find(e1) != edges.end()) {
-        std::cout << "Ta na bagaça\n";
-    }
-
-    if (edges.find(e2) != edges.end()) {
-        std::cout << "Ta na bagaça\n";
-    }
-
-    if (edges.find(e3) == edges.end()) {
-        std::cout << "Nao ta na bagaça\n";
-    }
-
-
+    if (edges.find(ed) != edges.end()) std::cout << "Achou\n";
+    else std::cout << "Não achou\n";
 
     return 0;
 }
