@@ -157,15 +157,8 @@ std::set<Edge> interval (Set_Pair XY, Vertex A, Vertex B, Vertex C) {
             edges.insert(e);
         }
     }
-
     return edges;
 }
-
-
-
-
-
-
 
 /*
 */

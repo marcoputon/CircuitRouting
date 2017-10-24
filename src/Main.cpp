@@ -22,6 +22,8 @@ int main(int argc, char* argv[]){
 
     C.add_zero_edges_to_components(XY);
 
+    C.convert_to_boost();
+
 
     string p = "print";
     if (argv[2] == p) {

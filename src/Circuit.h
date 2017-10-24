@@ -12,14 +12,15 @@ struct Circuit {
     std::map<string, Layer> Layers;
 
 
-    void input_to_objects(string);
-    void move_obstacles_points();
-    Set_Pair generate_hanan_grid();
-    void add_zero_edges_to_components(Set_Pair);
+    void input_to_objects(string);                  // Done
+    void move_obstacles_points();                   // Done
+    Set_Pair generate_hanan_grid();                 // Done
+    void add_zero_edges_to_components(Set_Pair);    // Done
+    void convert_to_boost();
     void remove_collided_points_with_obstacles();
     void connect_all_components();
     void remove_one_degree_vertices();
-    void remove_zero_edges();
+    void remove_zero_edges();                       // WTF???
     void generate_output();
     void draw();
 };

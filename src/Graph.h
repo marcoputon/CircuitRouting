@@ -43,7 +43,7 @@ struct G {
     IndexMap index;
 
     //  Trabalhar com essas listas antes de usar o grafo
-    std::map<Vertex, V> Vertex_map;
+    std::map<Vertex, V> Vertex_map; // I have no idea how the vertices got here (but they are)
     std::set <Edge> Edges;
 
 

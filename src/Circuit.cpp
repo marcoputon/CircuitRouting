@@ -99,6 +99,7 @@ Set_Pair Circuit::generate_hanan_grid() {
     std::set<int> Y;
     std::map<Vertex, V> vertices;
     std::set<Edge> grid;
+    G g;
 
     std::cout << "   Getting the coordinates\n";
     // Pega todos os pontos
@@ -149,13 +150,12 @@ Set_Pair Circuit::generate_hanan_grid() {
             e.v = v;
             e.w = euclidian_dist(u, v);
             grid.insert(e);
-            vertices[{*it_x, *it_y, 0}] = 1;
-            vertices[{*it_x, *it_yp, 0}] = 1;
+            vertices[{*it_x, *it_y, 0}] = boost::add_vertex(g.g);
+            vertices[{*it_x, *it_yp, 0}] = boost::add_vertex(g.g);
             std::cout << "\r      " << ci << "/" << n_edges;
             ci++;
         }
     }
-
 
     // Adiciona as arestas horizontais
     for (std::set<int>::iterator it_y = Y.begin(); it_y != Y.end(); ++it_y) {
@@ -179,11 +179,11 @@ Set_Pair Circuit::generate_hanan_grid() {
         }
     }
     std::cout << "\n";
-    G g;
     g.Vertex_map = vertices;
     g.Edges = grid;
     std::cout << "   Number of vertices: " << g.Vertex_map.size() << "\n";
 
+    // Ta copiando os mesmos vertex_descriptor, arrumar essa bagaça <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
     for (std::map<string, Layer>::iterator it = Layers.begin(); it != Layers.end(); ++it) {
         it->second.g = g;
     }
@@ -192,6 +192,7 @@ Set_Pair Circuit::generate_hanan_grid() {
     return XY;
 }
 
+
 void Circuit::add_zero_edges_to_components(Set_Pair XY){
     std::cout << "Adding zero edges:\n";
     for (std::map<string, Layer>::iterator it = Layers.begin(); it != Layers.end(); ++it) {
@@ -199,3 +200,36 @@ void Circuit::add_zero_edges_to_components(Set_Pair XY){
         it->second.add_zero_edges_to_components(XY);
     }
 }
+
+
+void Circuit::convert_to_boost() {
+    //std::map<string, Layer> Layers;
+    std::cout << "Converting to boost graph\n";
+    for (std::map<string, Layer>::iterator it = Layers.begin(); it != Layers.end(); ++it) {
+        std::cout << "   " << it->first << "\n";
+
+
+        //std::map<Vertex, V> Vertex_map
+        /*for (std::map<Vertex, V>::iterator lit = it->second.g.Vertex_map.begin(); lit != it->second.g.Vertex_map.end(); ++lit) {
+
+        }*/
+        it->second.g.print_Vertex_map();
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//
