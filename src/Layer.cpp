@@ -177,7 +177,10 @@ void Layer::add_zero_edges_to_components(Set_Pair XY) {
 
         // Arrumar isso tirando o teste de igualdade e usando o erase em todos os casos
         for (Edge e : z_edges) {
-            if (g.Edges.find(e) != g.Edges.end()) g.Edges.erase(e);
+            if (g.Edges.find(e) != g.Edges.end()) {
+                g.Edges.erase(e);
+                g.Edges.insert(e);
+            }
         }
         count++;
     }
