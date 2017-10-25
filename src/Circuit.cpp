@@ -201,23 +201,44 @@ void Circuit::add_zero_edges_to_components(Set_Pair XY){
     }
 }
 
-
 void Circuit::convert_to_boost() {
-    int i = 1;
+    int i = 1, ne, n;
     std::cout << "Converting to boost graph\n";
     for (std::map<string, Layer>::iterator it = Layers.begin(); it != Layers.end(); ++it) {
         int camada = ((int)it->first[1] - 48); // pega o numero da camada (max 8 camadas)
 
         // Percorrer set de arestas, adicionar os vértices e as arestas
+        n = it->second.g.Edges.size();
+        ne = 1;
         for (Edge e : it->second.g.Edges) {
+            std::cout << "\r      Layer " << i << "/" << Layers.size() << " - Edge " << ne << "/" << n;
             V vd_u, vd_v;
             E ed;
 
             e.u[2] = camada;
             e.v[2] = camada;
-
+            /* <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Comentário importante
+             * CONTINUAR AQUI
+             *
+             * O código até terminar esse laço ta demorando no total 8.63 minutos pro case1
+             *
+             * Usar try catch pra tentar inserir, ao inves de procurar pela bagaça com o find().
+             * Testar pra ver se não da erro que nem no erase() do set.
+             * Esse laço é o que mais ta demorando.
+             *
+             *
+             * find(): O(log(Q(P)))
+             * P = 4000
+             * Q(P) = 16000000 ~= 1.6 * 10^7
+             * Usando a função ~= 2 * Q(P)
+             *
+             * 2 * 16000000 * log(16000000) = 230531839 ~= 2.3 * 10^8
+             *
+             * qua, 25 de out, 03:44
+             * <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+             */
             //U
-            if (g.Vertex_map.find(e.u) != g.Vertex_map.end()) {
+            if (g.Vertex_map.find(e.u) != g.Vertex_map.end()) { // Trocar
                 vd_u = g.Vertex_map[e.u];
             }
             else {
@@ -225,7 +246,7 @@ void Circuit::convert_to_boost() {
                 vd_u = g.Vertex_map[e.u];
             }
             //V
-            if (g.Vertex_map.find(e.v) != g.Vertex_map.end()) {
+            if (g.Vertex_map.find(e.v) != g.Vertex_map.end()) { // Trocar
                 vd_v = g.Vertex_map[e.v];
             }
             else {
@@ -234,6 +255,7 @@ void Circuit::convert_to_boost() {
             }
 
             g.add_edge(vd_u, vd_v, e.w);
+            ne++;
         }
 
         // Adicionar as arestas das Vias
