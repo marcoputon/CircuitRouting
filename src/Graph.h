@@ -25,6 +25,18 @@ struct Edge {
     bool operator== (const Edge&) const;
 };
 
+namespace std {
+template<>
+class hash<Edge> {
+    public:
+        size_t operator()(const Edge &s) const {
+            //size_t h1 = std::hash<std::string>()(s.first_name);
+            //size_t h2 = std::hash<std::string>()(s.last_name);
+            return 0;//h1 ^ ( h2 << 1 );
+        }
+    };
+}
+
 // Grafo é uma lista de adjacencia com lista de vértices, arestas, não dirigido e com peso nas arestas
 typedef adjacency_list <vecS, vecS, undirectedS, no_property, property <edge_weight_t, int>> Graph;
 

@@ -14,6 +14,7 @@ Edge create (Vertex u, Vertex v, int w) {
 
 int main () {
     std::set<Edge> edges;
+    std::unordered_map<Edge, bool> EEE;
 
     Vertex a = {1, 1, 1};
     Vertex b = {2, 2, 2};
@@ -29,6 +30,12 @@ int main () {
     edges.insert(e2);
     edges.insert(e3);
     edges.insert(e4);
+
+    EEE[e4] = true;
+    EEE[e3] = false;
+
+    std::cout << "GYSADAIGHSFJDHKD " << EEE[e4] << "\n";
+    std::cout << "GYSADAIGHSFJDHKD " << EEE[e3] << "\n";
 
     for (std::set<Edge>::iterator it = edges.begin(); it != edges.end(); ++it) {
         Edge e = *it;
