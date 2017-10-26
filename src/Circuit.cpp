@@ -259,7 +259,7 @@ void Circuit::convert_to_boost() {
         }
 
         // Adicionar as arestas das Vias
-        if (i < (int)Layers.size()){
+        if (i < (int)Layers.size()) {
             for (Via v : it->second.Vias) {
                 Vertex vv = v.point;
                 vv[2] = v.point[2] + 1; // Mesmo ponto, camada adjacente
@@ -275,6 +275,15 @@ void Circuit::convert_to_boost() {
     //g.print_edges_set();
 }
 
+
+
+void remove_collided_points_with_obstacles() {
+    // Fazer o mesmo esquema de encontrar as arestas de peso 0, só que com
+    // a lista de Obstacle.
+
+    
+
+}
 
 
 

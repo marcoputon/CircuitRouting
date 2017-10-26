@@ -26,14 +26,14 @@ struct Edge {
 };
 
 namespace std {
-template<>
-class hash<Edge> {
-    public:
-        size_t operator()(const Edge &s) const {
-            //size_t h1 = std::hash<std::string>()(s.first_name);
-            //size_t h2 = std::hash<std::string>()(s.last_name);
-            return 0;//h1 ^ ( h2 << 1 );
-        }
+    template<>
+    class hash<Edge> {
+        public:
+            size_t operator()(const Edge &s) const {
+                //size_t h1 = std::hash<std::string>()(s.first_name);
+                //size_t h2 = std::hash<std::string>()(s.last_name);
+                return 0;//h1 ^ ( h2 << 1 );
+            }
     };
 }
 
