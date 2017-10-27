@@ -17,7 +17,7 @@ struct Circuit {
     Set_Pair generate_hanan_grid();                 // Done
     void add_zero_edges_to_components(Set_Pair);    // Done
     void convert_to_boost();                        // Kind of done
-    void remove_collided_points_with_obstacles();   // Doing
+    void remove_collision_with_obstacles(Set_Pair); // Doing
     void connect_all_components();
     void remove_one_degree_vertices();
     void remove_zero_edges();                       // WTF???

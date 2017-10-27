@@ -189,6 +189,50 @@ void Layer::add_zero_edges_to_components(Set_Pair XY) {
 
 
 
+std::set<Vertex> vertices_interval (Set_Pair XY, Vertex A, Vertex B, Vertex C) {
+    std::set<int> X, Y;
+    std::set<Vertex> vertices;
+
+    // Pega os valores de X do intervalo
+    for (std::set<int>::iterator it = XY.first.find(A[0]); it != XY.first.find(B[0]); ++it) {
+        X.insert(*it);
+    }
+    X.insert(B[0]);
+    // Pega os valores de Y do intervalo
+    for (std::set<int>::iterator it = XY.second.find(C[1]); it != XY.second.find(B[1]); ++it) {
+        Y.insert(*it);
+    }
+    Y.insert(B[1]);
+
+    // Cria os pontos da sub grade
+    for (int x : X) {
+        for (int y : Y) {
+            vertices.insert({x, y, A[2]});
+        }
+    }
+
+    return vertices;
+}
+
+
+std::set<Vertex> Layer::find_collision_with_obstacles(Set_Pair XY) {
+    std::set<Vertex> del_vertices;
+    std::set<Vertex> found;
+    int n = this->Obstacles.size();
+    int count = 1;
+    for (Shape c : this->Obstacles) {
+        std::cout << "\r      Obstacle " << count << "/" << n;
+        del_vertices = vertices_interval(XY, c.A, c.B, c.C);
+
+        found.insert(del_vertices.begin(), del_vertices.end());
+
+        count++;
+    }
+    std::cout << "\n";
+
+    return found;
+}
+
 
 
 

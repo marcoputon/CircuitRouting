@@ -24,6 +24,8 @@ int main(int argc, char* argv[]){
 
     C.convert_to_boost();
 
+    C.remove_collision_with_obstacles(XY);
+
 
     string p = "print";
     if (argv[2] == p) {

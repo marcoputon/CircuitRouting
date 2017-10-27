@@ -17,7 +17,7 @@ struct Layer {
     void add_via(std::vector<string>);
     void move_obstacles_points();
     void add_zero_edges_to_components(Set_Pair);
-    void remove_collided_points_with_obstacles();
+    std::set<Vertex> find_collision_with_obstacles(Set_Pair);
     void set_third_coord(int);
     void draw();
 

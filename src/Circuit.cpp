@@ -217,26 +217,7 @@ void Circuit::convert_to_boost() {
 
             e.u[2] = camada;
             e.v[2] = camada;
-            /* <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Comentário importante
-             * CONTINUAR AQUI
-             *
-             * O código até terminar esse laço ta demorando no total 8.63 minutos pro case1
-             *
-             * Usar try catch pra tentar inserir, ao inves de procurar pela bagaça com o find().
-             * Testar pra ver se não da erro que nem no erase() do set.
-             * Esse laço é o que mais ta demorando.
-             *
-             *
-             * find(): O(log(Q(P)))
-             * P = 4000
-             * Q(P) = 16000000 ~= 1.6 * 10^7
-             * Usando a função ~= 2 * Q(P)
-             *
-             * 2 * 16000000 * log(16000000) = 230531839 ~= 2.3 * 10^8
-             *
-             * qua, 25 de out, 03:44
-             * <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-             */
+
             //U
             if (g.Vertex_map.find(e.u) != g.Vertex_map.end()) { // Trocar
                 vd_u = g.Vertex_map[e.u];
@@ -277,11 +258,14 @@ void Circuit::convert_to_boost() {
 
 
 
-void remove_collided_points_with_obstacles() {
-    // Fazer o mesmo esquema de encontrar as arestas de peso 0, só que com
-    // a lista de Obstacle.
+void Circuit::remove_collision_with_obstacles(Set_Pair XY) {
+    std::cout << "\nRemoving collisions with obstacles\n";
+    std::set<Vertex> to_remove;
 
-    
+    for (std::map<string, Layer>::iterator it = Layers.begin(); it != Layers.end(); ++it) {
+        std::cout << "   " << it->first << ":\n";
+        to_remove = it->second.find_collision_with_obstacles(XY);
+    }
 
 }
 
