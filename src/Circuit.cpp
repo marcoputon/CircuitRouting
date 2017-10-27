@@ -261,8 +261,8 @@ void Circuit::convert_to_boost() {
 void Circuit::remove_collision_with_obstacles(Set_Pair XY) {
     std::cout << "\nRemoving collisions with obstacles\n";
     std::set<Vertex> to_remove;
-    std::cout << "AAAAA\n\n" << g.Vertex_map.size() << "\n\n";
-    g.print_Vertex_map();
+    std::cout << "AAAAA\n\n" << boost::num_vertices(g.g) << " - " << boost::num_edges(g.g) << "\n\n";
+    //g.print_Vertex_map();
     for (std::map<string, Layer>::iterator it = Layers.begin(); it != Layers.end(); ++it) {
         std::cout << "   " << it->first << ":\n";
         to_remove = it->second.find_collision_with_obstacles(XY);
@@ -272,27 +272,11 @@ void Circuit::remove_collision_with_obstacles(Set_Pair XY) {
         }
     }
 
-    std::cout << "\nBBBB\n\n" << g.Vertex_map.size() << "\n\n";
-    g.print_Vertex_map();
+    std::cout << "\nBBBB\n\n" << boost::num_vertices(g.g) << " - " << boost::num_edges(g.g) << "\n\n";
+    //g.print_Vertex_map();
 
 }
 
-
-/*
-
-
-49
-49
-98
-
-
-
-
-
-
-
-
-*/
 
 
 
