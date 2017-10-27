@@ -194,15 +194,15 @@ std::set<Vertex> vertices_interval (Set_Pair XY, Vertex A, Vertex B, Vertex C) {
     std::set<Vertex> vertices;
 
     // Pega os valores de X do intervalo
-    for (std::set<int>::iterator it = XY.first.find(A[0]); it != XY.first.find(B[0]); ++it) {
+    for (std::set<int>::iterator it = ++XY.first.find(A[0]); it != XY.first.find(B[0]); ++it) {
         X.insert(*it);
     }
-    X.insert(B[0]);
+    //X.insert(B[0]);
     // Pega os valores de Y do intervalo
-    for (std::set<int>::iterator it = XY.second.find(C[1]); it != XY.second.find(B[1]); ++it) {
+    for (std::set<int>::iterator it = ++XY.second.find(C[1]); it != XY.second.find(B[1]); ++it) {
         Y.insert(*it);
     }
-    Y.insert(B[1]);
+    //Y.insert(B[1]);
 
     // Cria os pontos da sub grade
     for (int x : X) {
