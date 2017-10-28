@@ -44,9 +44,7 @@ void G::remove_vertex_from_map(Vertex v) {
 }
 
 void G::remove_vertex(Vertex v) {
-    std::cout << Vertex_map[v] << " - out_degree: " << boost::out_degree(Vertex_map[v], this->g) << "\n";
     boost::clear_vertex(Vertex_map[v], this->g);
-    boost::remove_vertex(Vertex_map[v], this->g);
     this->Vertex_map.erase(v);
 }
 
