@@ -88,16 +88,12 @@ void Layer::print_vias() {
 }
 
 
-
-
-
-
 void print_vertex (Vertex v) {
     std::cout << "(" << v[0] << ", " << v[1] << ", " << v[2] << ")\n";
 }
 
 
-
+/*
 
 std::set<Edge> interval (Set_Pair XY, Vertex A, Vertex B, Vertex C) {
     Vector_Pair inter;
@@ -160,12 +156,11 @@ std::set<Edge> interval (Set_Pair XY, Vertex A, Vertex B, Vertex C) {
     return edges;
 }
 
-/*
-*/
 
 bool igual (Vertex u, Vertex v) {
     return u[0] == v[0] && u[1] == v[1] && u[2] == v[2];
 }
+
 
 void Layer::add_zero_edges_to_components(Set_Pair XY) {
     std::set<Edge> z_edges;
@@ -186,7 +181,6 @@ void Layer::add_zero_edges_to_components(Set_Pair XY) {
     }
     std::cout << "\nn edges: " << g.Edges.size() << "\n";
 }
-
 
 
 std::set<Vertex> vertices_interval (Set_Pair XY, Vertex A, Vertex B, Vertex C) {
@@ -233,6 +227,8 @@ std::set<Vertex> Layer::find_collision_with_obstacles(Set_Pair XY) {
     return found;
 }
 
+
+*/
 
 
 

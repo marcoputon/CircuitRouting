@@ -21,14 +21,17 @@ int main(int argc, char* argv[]){
 
     XY = C.generate_hanan_grid();
 
+    C.spanning_tree();
 
-/*
     string p = "print";
     if (argv[2] == p) {
         C.g.print_Vertex_map();
-        C.g.print_edges_set();
+        //C.g.print_edges_set();
     }
+    /*
 */
+
+    C.g.to_dot();
 
     time(&end);
     double dif = difftime(end, start);

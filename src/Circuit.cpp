@@ -5,6 +5,7 @@
 #include "Circuit.h"
 #include <boost/algorithm/string.hpp>
 #include <boost/lexical_cast.hpp>
+#include <fstream>
 
 
 void Circuit::draw(){
@@ -87,22 +88,15 @@ void Circuit::move_obstacles_points() {
     std::cout << "Moving obstacle points\n";
     for (std::map<int, Layer>::iterator it = Layers.begin(); it != Layers.end(); ++it) {
         it->second.move_obstacles_points();
-
-        //std::cout << it->first << "\n";
-
-        //it->second.print_shapes(1);
-        //it->second.print_shapes(0);
     }
 }
-
-
 
 
 bool point_collide_rect(Vertex v, Shape s) {
     return ((v[0] > s.A[0] && v[0] < s.B[0]) && (v[1] > s.D[1] && v[1] < s.A[1]));
 }
 
-Set_Pair Circuit::generate_hanan_grid() {
+void Circuit::generate_hanan_grid() {
     std::cout << "Generating hanan grid\n";
     std::set<int> X;
     std::set<int> Y;
@@ -110,7 +104,6 @@ Set_Pair Circuit::generate_hanan_grid() {
 
     std::map<Vertex, V> vertices;
     std::set<Edge> grid;
-    G g;
 
     int z_coord = 1;
 
@@ -145,8 +138,9 @@ Set_Pair Circuit::generate_hanan_grid() {
         z_coord++;
     }
 
-    int ci = 1, n_edges = (X.size()-1) * Y.size() + (Y.size()-1) * X.size();
-    std::cout << "   Creating edges\n";
+    G g(X.size() * Y.size() * Z.size());
+
+    /*
 
     // Cria vértices e arestas
     for (int z : Z) {
@@ -171,11 +165,24 @@ Set_Pair Circuit::generate_hanan_grid() {
                 }
 
                 if (!col) {
-                    V vu = boost::add_vertex(g.g);
-                    V vv = boost::add_vertex(g.g);
-                    g.Vertex_map.insert({u, vu});
-                    g.Vertex_map.insert({v, vv});
-                    g.add_edge(vu, vv, euclidian_dist(u, v));
+                    V vu;
+                    V vv;
+                    if (this->g.Vertex_map.find(u) == this->g.Vertex_map.end()) {
+                        vu = boost::add_vertex(this->g.g);
+                    }
+                    else {
+                        vu = this->g.Vertex_map[u];
+                    }
+                    if (this->g.Vertex_map.find(v) == this->g.Vertex_map.end()) {
+                        vv = boost::add_vertex(this->g.g);
+                    }
+                    else {
+                        vv = this->g.Vertex_map[v];
+                    }
+
+                    this->g.Vertex_map[u] = vu;
+                    this->g.Vertex_map[v] = vv;
+                    this->g.add_edge(vu, vv, euclidian_dist(u, v));
                 }
                 std::cout << "\r      " << ci << "/" << n_edges * N_MetalLayers;
                 ci++;
@@ -203,49 +210,68 @@ Set_Pair Circuit::generate_hanan_grid() {
                 }
 
                 if (!col) {
-                    V vu = boost::add_vertex(g.g);
-                    V vv = boost::add_vertex(g.g);
-                    g.Vertex_map.insert({u, vu});
-                    g.Vertex_map.insert({v, vv});
-                    g.add_edge(vu, vv, euclidian_dist(u, v));
+                    V vu;
+                    V vv;
+                    if (this->g.Vertex_map.find(u) == this->g.Vertex_map.end()) {
+                        vu = boost::add_vertex(this->g.g);
+                    }
+                    else {
+                        vu = this->g.Vertex_map[u];
+                    }
+                    if (this->g.Vertex_map.find(v) == this->g.Vertex_map.end()) {
+                        vv = boost::add_vertex(this->g.g);
+                    }
+                    else {
+                        vv = this->g.Vertex_map[v];
+                    }
+
+                    this->g.Vertex_map[u] = vu;
+                    this->g.Vertex_map[v] = vv;
+                    this->g.add_edge(vu, vv, euclidian_dist(u, v));
                 }
                 std::cout << "\r      " << ci << "/" << n_edges * N_MetalLayers;
                 ci++;
             }
         }
-    }
 
-
-
-
-/*
-    // Cria todos os pontos da grade
-    for (int z : Z) {
-        for (int x : X) {
-            for (int y : Y) {
-
-                // Testa colisão com obstáculos
-                for (Shape o : Layers[z].Obstacles) {
-                    if (!point_collide_rect({x,y,z}, o)) {
-                    }
-                }
-            }
+        for (Via v : Layers[z].Vias) {
+            Vertex uu = v.point;
+            Vertex vv = uu;
+            vv[2] = vv[2]++;
+            print_v(vv);
+            print_v(uu);
+            this->g.add_edge(this->g.Vertex_map[uu], this->g.Vertex_map[uu], ViaCost);
         }
     }
-*/
-    std::pair<std::set<int>, std::set<int>> XY(X, Y);
-    return XY;
+    */
+
 }
 
 
 
+void Circuit::spanning_tree() {
+    std::ofstream myfile;
+    myfile.open("spanning.dot");
+    myfile << "graph {\n";
+
+    std::vector <E> spanning_tree;
+    boost::kruskal_minimum_spanning_tree(this->g.g, std::back_inserter(spanning_tree));
+
+    for (std::vector<E>::iterator ei = spanning_tree.begin(); ei != spanning_tree.end(); ++ei) {
+        myfile << source(*ei, this->g.g) << " -- " << target(*ei, this->g.g) << "\n";
+    }
+    myfile << "}";
+    myfile.close();
+}
 
 
+/*
 
+void Circuit::close_components_cycles() {
+    for () {
 
-
-    /*
-
+    }
+}
 
 
 

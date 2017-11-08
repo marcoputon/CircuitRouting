@@ -8,12 +8,8 @@
 using namespace boost;
 
 
-
-
 typedef std::pair<std::set<int>, std::set<int>> Set_Pair;
 typedef std::pair<std::vector<int>, std::vector<int>> Vector_Pair;
-
-// Vértice é um array de tamanho 3
 typedef std::array<int, 3> Vertex;
 
 struct Edge {
@@ -45,8 +41,6 @@ typedef graph_traits <Graph>::edge_descriptor E;
 typedef graph_traits <Graph>::edge_iterator EI;
 typedef graph_traits <Graph>::vertex_descriptor V;
 typedef graph_traits <Graph>::vertex_iterator VI;
-
-// get the property map for vertex indices
 typedef property_map<Graph, vertex_index_t>::type IndexMap;
 
 
@@ -60,7 +54,7 @@ struct G {
     std::set <Edge> Edges;
 
 
-    G();
+    G(int s);
 
     void map_to_graph();
 
@@ -76,12 +70,10 @@ struct G {
     void remove_edge_from_map(Edge);
     void print_edges();
     void print_edges_set();
-
+    void to_dot();
 };
 
 
-//  Isso não deve ficar aqui
 void print_edges(std::vector<E>, G);
 void print_edge(Edge e);
-
 int euclidian_dist(Vertex, Vertex);

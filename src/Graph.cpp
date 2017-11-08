@@ -2,10 +2,11 @@
 #include <iostream>
 #include <math.h>
 #include <utility>
+#include <string>
+#include <fstream>
 
 
-G::G(){
-    index = get(vertex_index, g);
+G::G(int s):g(s), index(get(vertex_index, g)) {
 }
 
 
@@ -13,46 +14,43 @@ bool Edge::operator< (const Edge& e) const {
     return (u < e.u) || (u == e.u && v < e.v);
 }
 
+
 bool Edge::operator== (const Edge& x) const {
     return (u == x.u && v == x.v) || (u == x.v && v == x.u);
 }
 
-/*
-//  -1 para vértices não inicializados
-void G::add_vertex_to_map(Vertex v) {
-    this->Vertex_map[v] = -1;
-}
-
-void G::add_vertex(Vertex v) {
-    V vi = boost::add_vertex(this->g);
-    this->Vertex_map[v] = vi;
-}
-
-void G::add_edge_to_sec(Vertex u, Vertex v, int w) {
-    Edge e;
-        e.u = u;
-        e.v = v;
-        e.w = w;
-    this->Edges.insert(e);
-}
-
-
-//  Modificar para remover apenas do mapa
-void G::remove_vertex_from_map(Vertex v) {
-    this->Vertex_map.erase(v);
-}
-
-void G::remove_vertex(Vertex v) {
-    boost::clear_vertex(Vertex_map[v], this->g);
-    this->Vertex_map.erase(v);
-}
-
-
-*/
 
 //  Modidicar para (não sei ainda)
 void G::add_edge(V u, V v, int w) {
     boost::add_edge(u, v, w, g);
+}
+
+/*
+graph {
+	A [pos = "0,0"]
+	B [pos = "10,10"]
+
+	A -- B
+}
+
+*/
+
+
+void G::to_dot() {
+    EI ei, ei_end;
+    std::string out;
+    std::ofstream myfile;
+    myfile.open("teste.dot");
+    myfile << "graph {\n";
+
+
+    for (boost::tie(ei, ei_end) = boost::edges(g); ei != ei_end; ++ei) {
+        myfile << source(*ei, g) << " -- " << target(*ei, g) << "\n";
+    }
+
+    myfile << "}";
+    myfile.close();
+    std::cout << out;
 }
 
 
@@ -76,12 +74,12 @@ void G::print_edges(){
     }
 }
 
-/*
 void G::print_Vertex_map() {
     for (std::map<Vertex,V>::iterator it = Vertex_map.begin(); it != Vertex_map.end(); ++it) {
         std::cout << "(" << it->first[0] << ", " << it->first[1] << ", " << it->first[2] << ") => " << it->second << '\n';
     }
 }
+/*
 */
 
 void print_edges(std::vector <E> spanning_tree, G graph) {
