@@ -8,7 +8,7 @@
 
 
 void Circuit::draw(){
-    for (std::map<string, Layer>::iterator it = Layers.begin(); it != Layers.end(); ++it) {
+    for (std::map<int, Layer>::iterator it = Layers.begin(); it != Layers.end(); ++it) {
         std::cout << it->first << ":\n";
         std::cout << "Shapes:\n";
         it->second.print_shapes(1);
@@ -54,30 +54,27 @@ void Circuit::input_to_objects(string case_path){
     //  Cria as camadas no circuito (ainda vazias)
     for (int i = 1; i <= this->N_MetalLayers; i++) {
         Layer l;
-        this->Layers["M" + std::to_string(i)] = l;
+        this->Layers[i] = l;
     }
-
 
     //  Instanciação dos objetos das Layers
     for (int i = 0; i < N_RoutedShapes; i++) {
         boost::split(strs, input.at(i + 7), boost::is_any_of("\t "));
-        Layers[strs.at(1)].add_shape(strs);
+        Layers[strs.at(1)[1] - 48].add_shape(strs);
     }
 
     int j = N_RoutedShapes + 7;
     for (int i = 0; i < N_RoutedVias; i++) {
         boost::split(strs, input.at(j + i), boost::is_any_of("\t "));
-        Layers["M" + strs.at(1).substr(1, 1)].add_via(strs);
+        Layers[strs.at(1)[1] - 48].add_via(strs);
 
-        std::string adj_layer = std::to_string(boost::lexical_cast<int>(strs.at(1).substr(1, 1)) + 1);
-        Layers["M" + adj_layer].add_via(strs);
+        Layers[strs.at(1)[1] - 47].add_via(strs);
     }
-
 
     j = N_RoutedVias + N_RoutedShapes + 7;
     for (int i = 0; i < N_Obstacles; i++) {
         boost::split(strs, input.at(j + i), boost::is_any_of("\t "));
-        Layers[strs.at(1)].add_shape(strs);
+        Layers[strs.at(1)[1] - 48].add_shape(strs);
 
     }
 
@@ -85,25 +82,41 @@ void Circuit::input_to_objects(string case_path){
 }
 
 
+
 void Circuit::move_obstacles_points() {
     std::cout << "Moving obstacle points\n";
-    for (std::map<string, Layer>::iterator it = Layers.begin(); it != Layers.end(); ++it) {
+    for (std::map<int, Layer>::iterator it = Layers.begin(); it != Layers.end(); ++it) {
         it->second.move_obstacles_points();
+
+        //std::cout << it->first << "\n";
+
+        //it->second.print_shapes(1);
+        //it->second.print_shapes(0);
     }
 }
 
+
+
+
+bool point_collide_rect(Vertex v, Shape s) {
+    return ((v[0] > s.A[0] && v[0] < s.B[0]) && (v[1] > s.D[1] && v[1] < s.A[1]));
+}
 
 Set_Pair Circuit::generate_hanan_grid() {
     std::cout << "Generating hanan grid\n";
     std::set<int> X;
     std::set<int> Y;
+    std::set<int> Z;
+
     std::map<Vertex, V> vertices;
     std::set<Edge> grid;
     G g;
 
+    int z_coord = 1;
+
     std::cout << "   Getting the coordinates\n";
-    // Pega todos os pontos
-    for (std::map<string, Layer>::iterator it = Layers.begin(); it != Layers.end(); ++it) {
+    // Pega todas as coordenadas
+    for (std::map<int, Layer>::iterator it = Layers.begin(); it != Layers.end(); ++it) {
         for (Shape c : it->second.Components) {
             X.insert(c.A[0]);
             Y.insert(c.A[1]);
@@ -113,7 +126,6 @@ Set_Pair Circuit::generate_hanan_grid() {
             Y.insert(c.C[1]);
             X.insert(c.D[0]);
             Y.insert(c.D[1]);
-
         }
         for (Shape o : it->second.Obstacles) {
             X.insert(o.A[0]);
@@ -129,73 +141,130 @@ Set_Pair Circuit::generate_hanan_grid() {
             X.insert(v.point[0]);
             Y.insert(v.point[1]);
         }
+        Z.insert(z_coord);
+        z_coord++;
     }
 
     int ci = 1, n_edges = (X.size()-1) * Y.size() + (Y.size()-1) * X.size();
     std::cout << "   Creating edges\n";
-    // Adiciona as arestas verticais
-    for (std::set<int>::iterator it_x = X.begin(); it_x != X.end(); ++it_x) {
-        for (std::set<int>::iterator it_y = Y.begin(); it_y != Y.end(); ++it_y) {
-            std::set<int>::iterator it_yp = it_y;
-            ++it_yp;
-            if (it_yp == Y.end()) {
-                break;
-            }
 
-            Vertex u = {*it_x, *it_y, 0};
-            Vertex v = {*it_x, *it_yp, 0};
-
-            Edge e;
-            e.u = u;
-            e.v = v;
-            e.w = euclidian_dist(u, v);
-            grid.insert(e);
-            vertices[{*it_x, *it_y, 0}] = boost::add_vertex(g.g);
-            vertices[{*it_x, *it_yp, 0}] = boost::add_vertex(g.g);
-            std::cout << "\r      " << ci << "/" << n_edges;
-            ci++;
-        }
-    }
-
-    // Adiciona as arestas horizontais
-    for (std::set<int>::iterator it_y = Y.begin(); it_y != Y.end(); ++it_y) {
+    // Cria vértices e arestas
+    for (int z : Z) {
+        // Adiciona as arestas verticais
         for (std::set<int>::iterator it_x = X.begin(); it_x != X.end(); ++it_x) {
-            std::set<int>::iterator it_xp = it_x;
-            ++it_xp;
-            if (it_xp == X.end()) {
-                break;
+            for (std::set<int>::iterator it_y = Y.begin(); it_y != Y.end(); ++it_y) {
+                std::set<int>::iterator it_yp = it_y;
+                ++it_yp;
+                if (it_yp == Y.end()) {
+                    break;
+                }
+
+                Vertex u = {*it_x, *it_y, z};
+                Vertex v = {*it_x, *it_yp, z};
+
+                bool col = false;
+                for (Shape o : Layers[z].Obstacles) {
+                    if (point_collide_rect(u, o) || point_collide_rect(v, o)) {
+                        col = true;
+                        break;
+                    }
+                }
+
+                if (!col) {
+                    V vu = boost::add_vertex(g.g);
+                    V vv = boost::add_vertex(g.g);
+                    g.Vertex_map.insert({u, vu});
+                    g.Vertex_map.insert({v, vv});
+                    g.add_edge(vu, vv, euclidian_dist(u, v));
+                }
+                std::cout << "\r      " << ci << "/" << n_edges * N_MetalLayers;
+                ci++;
             }
+        }
 
-            Vertex u = {*it_x, *it_y, 0};
-            Vertex v = {*it_xp, *it_y, 0};
+        // Adiciona as arestas horizontais
+        for (std::set<int>::iterator it_y = Y.begin(); it_y != Y.end(); ++it_y) {
+            for (std::set<int>::iterator it_x = X.begin(); it_x != X.end(); ++it_x) {
+                std::set<int>::iterator it_xp = it_x;
+                ++it_xp;
+                if (it_xp == X.end()) {
+                    break;
+                }
 
-            Edge e;
-            e.u = u;
-            e.v = v;
-            e.w = euclidian_dist(u, v);
-            grid.insert(e);
-            std::cout << "\r      " << ci << "/" << n_edges;
-            ci++;
+                Vertex u = {*it_x, *it_y, z};
+                Vertex v = {*it_xp, *it_y, z};
+
+                bool col = false;
+                for (Shape o : Layers[z].Obstacles) {
+                    if (point_collide_rect(u, o) || point_collide_rect(v, o)) {
+                        col = true;
+                        break;
+                    }
+                }
+
+                if (!col) {
+                    V vu = boost::add_vertex(g.g);
+                    V vv = boost::add_vertex(g.g);
+                    g.Vertex_map.insert({u, vu});
+                    g.Vertex_map.insert({v, vv});
+                    g.add_edge(vu, vv, euclidian_dist(u, v));
+                }
+                std::cout << "\r      " << ci << "/" << n_edges * N_MetalLayers;
+                ci++;
+            }
         }
     }
-    std::cout << "\n";
-    g.Vertex_map = vertices;
-    g.Edges = grid;
-    std::cout << "   Number of vertices: " << g.Vertex_map.size() << "\n";
-    std::cout << "   Number of edges: " << grid.size() << "\n";
 
-    for (std::map<string, Layer>::iterator it = Layers.begin(); it != Layers.end(); ++it) {
-        it->second.g = g;
+
+
+
+/*
+    // Cria todos os pontos da grade
+    for (int z : Z) {
+        for (int x : X) {
+            for (int y : Y) {
+
+                // Testa colisão com obstáculos
+                for (Shape o : Layers[z].Obstacles) {
+                    if (!point_collide_rect({x,y,z}, o)) {
+                    }
+                }
+            }
+        }
     }
-
+*/
     std::pair<std::set<int>, std::set<int>> XY(X, Y);
     return XY;
 }
 
 
+
+
+
+
+
+
+    /*
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 void Circuit::add_zero_edges_to_components(Set_Pair XY){
     std::cout << "Adding zero edges:\n";
-    for (std::map<string, Layer>::iterator it = Layers.begin(); it != Layers.end(); ++it) {
+    for (std::map<int, Layer>::iterator it = Layers.begin(); it != Layers.end(); ++it) {
         std::cout << "   " << it->first << ":\n";
         it->second.add_zero_edges_to_components(XY);
     }
@@ -204,7 +273,7 @@ void Circuit::add_zero_edges_to_components(Set_Pair XY){
 void Circuit::convert_to_boost() {
     int i = 1, ne, n;
     std::cout << "Converting to boost graph\n";
-    for (std::map<string, Layer>::iterator it = Layers.begin(); it != Layers.end(); ++it) {
+    for (std::map<int, Layer>::iterator it = Layers.begin(); it != Layers.end(); ++it) {
         int camada = ((int)it->first[1] - 48); // pega o numero da camada (max 8 camadas)
 
         // Percorrer set de arestas, adicionar os vértices e as arestas
@@ -257,11 +326,10 @@ void Circuit::convert_to_boost() {
 }
 
 
-
 void Circuit::remove_collision_with_obstacles(Set_Pair XY) {
     std::cout << "\nRemoving collisions with obstacles\n";
     std::set<Vertex> to_remove;
-    for (std::map<string, Layer>::iterator it = Layers.begin(); it != Layers.end(); ++it) {
+    for (std::map<int, Layer>::iterator it = Layers.begin(); it != Layers.end(); ++it) {
         std::cout << "   " << it->first << ":\n";
         to_remove = it->second.find_collision_with_obstacles(XY);
 
@@ -281,6 +349,5 @@ void Circuit::remove_collision_with_obstacles(Set_Pair XY) {
 
 
 
-
-
 //
+*/

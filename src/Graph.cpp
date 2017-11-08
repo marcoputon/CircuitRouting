@@ -17,7 +17,7 @@ bool Edge::operator== (const Edge& x) const {
     return (u == x.u && v == x.v) || (u == x.v && v == x.u);
 }
 
-
+/*
 //  -1 para vértices não inicializados
 void G::add_vertex_to_map(Vertex v) {
     this->Vertex_map[v] = -1;
@@ -27,7 +27,6 @@ void G::add_vertex(Vertex v) {
     V vi = boost::add_vertex(this->g);
     this->Vertex_map[v] = vi;
 }
-
 
 void G::add_edge_to_sec(Vertex u, Vertex v, int w) {
     Edge e;
@@ -49,6 +48,7 @@ void G::remove_vertex(Vertex v) {
 }
 
 
+*/
 
 //  Modidicar para (não sei ainda)
 void G::add_edge(V u, V v, int w) {
@@ -76,13 +76,13 @@ void G::print_edges(){
     }
 }
 
-
+/*
 void G::print_Vertex_map() {
     for (std::map<Vertex,V>::iterator it = Vertex_map.begin(); it != Vertex_map.end(); ++it) {
         std::cout << "(" << it->first[0] << ", " << it->first[1] << ", " << it->first[2] << ") => " << it->second << '\n';
     }
 }
-
+*/
 
 void print_edges(std::vector <E> spanning_tree, G graph) {
     for (std::vector <E>::iterator ei = spanning_tree.begin(); ei != spanning_tree.end(); ++ei) {
@@ -104,11 +104,8 @@ int euclidian_dist(Vertex u, Vertex v) {
 }
 
 void G::print_edges_set() {
-    // u=source(*ep.first,g);
-    // v=target(*ep.first,g);
     int i = 0;
     for (std::pair<EI, EI> ei = boost::edges(g); ei.first != ei.second; ++ei.first) {
-        //std::cout << source(*ei.first, g) << " -> " << target(*ei.first, g) << "\n";
         std::cout << *ei.first << "\n";
         i++;
     }

@@ -25,4 +25,6 @@ struct Layer {
     void print_vias();
 };
 
+std::set<Edge> interval (Set_Pair, Vertex, Vertex, Vertex); // XY, A, B, C
+
 void print_v(Vertex);

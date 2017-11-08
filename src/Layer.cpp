@@ -16,7 +16,7 @@ void Layer::add_shape(std::vector<string> line) {
     int vy = boost::lexical_cast<int>(splited.at(1).substr(0, splited.at(1).size() - 1));
 
     // Máximo 8 camadas, 1 indice da string
-    int z = boost::lexical_cast<int>(line.at(1).substr(1, 1));
+    int z = line.at(1)[1] - 48;
 
     s.A = {ux, vy, z};
     s.B = {vx, vy, z};
@@ -38,7 +38,7 @@ void Layer::add_via(std::vector<string> line) {
     int uy = boost::lexical_cast<int>(splited.at(1).substr(0, splited.at(1).size() - 1));
 
     // Máximo 8 camadas, 1 indice da string
-    int z = boost::lexical_cast<int>(line.at(1).substr(1, 1));
+    int z = line.at(1)[1] - 48;
 
     v.point = {ux, uy, z};
 

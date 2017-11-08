@@ -1,11 +1,13 @@
 #include "../Graph.h"
 #include "iostream"
 
+void draw_edge(V label, Vertex v) {
+    std::cout << label << " [pos=\"" v[0] << "," << v[1] << "," << v[2] << "\"]";
+}
+
 int main() {
-    G graph;
-    std::vector <E> spanning_tree;
-/*
-*/
+    G graph;;
+
     Vertex u0 = {0, 0, 0};
     Vertex u1 = {1, 1, 1};
     Vertex u2 = {2, 2, 2};
@@ -17,19 +19,22 @@ int main() {
     graph.add_vertex(u2);
     graph.add_vertex(u3);
     graph.add_vertex(u4);
-    graph.print_Vertex_map();
-    std::cout << "\n";
 
-    graph.add_edge_to_sec(u0, u1, 2);
-    graph.add_edge_to_sec(u1, u2, 2);
-    graph.print_edges();
-
-    std::cout << "\n\n\n\n";
+    graph.add_edge(graph.Vertex_map[u0], graph.Vertex_map[u1], 2);
+    graph.add_edge(graph.Vertex_map[u1], graph.Vertex_map[u2], 2);
 
 
-    graph.remove_vertex(u2);
-    graph.print_Vertex_map();
+    std::cout << "graph {";
 
+    // 	A [pos = "0,0!"]
+    for (std::pair<EI, EI> ei = boost::edges(graph.g); ei.first != ei.second; ++ei.first) {
+        std::cout << *ei.first << "\n";
 
+        for () {
+            
+        }
+    }
+
+    std::cout << "}";
     return 0;
 }
