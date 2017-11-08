@@ -54,7 +54,7 @@ struct G {
     std::set <Edge> Edges;
 
 
-    G(int s);
+    G();
 
     void map_to_graph();
 

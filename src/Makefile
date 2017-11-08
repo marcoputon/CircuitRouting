@@ -1,6 +1,6 @@
 main:
-	g++ *.cpp -o main -Wall
+	g++ -O2 *.cpp -o main -Wall
 
 all:
 	rm -f main
-	g++ *.cpp -o main -Wall
+	g++ -O2 *.cpp -o main -Wall

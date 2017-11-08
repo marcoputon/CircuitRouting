@@ -19,7 +19,7 @@ int main(int argc, char* argv[]){
     C.input_to_objects(argv[1]);
     C.move_obstacles_points();
 
-    XY = C.generate_hanan_grid();
+    C.generate_hanan_grid();
 
     C.spanning_tree();
 

@@ -6,7 +6,8 @@
 #include <fstream>
 
 
-G::G(int s):g(s), index(get(vertex_index, g)) {
+G::G() {
+    index = get(vertex_index, g);
 }
 
 
