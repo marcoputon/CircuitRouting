@@ -140,15 +140,50 @@ void Circuit::generate_hanan_grid() {
 
     Graph g(X.size() * Y.size() * Z.size());
 
-    for (int x : X) {
-        for (int y : Y) {
-            for (int z : Z) {
-                vertices.push_back({x,y,z});
-                rev_map[{x,y,z}] = vertices.size() - 1;
+    //Vertices
+    for (std::set<int>::iterator x = X.begin(); x != X.end(); ++x) {
+        for (std::set<int>::iterator y = Y.begin(); y != Y.end(); ++y) {
+            for (std::set<int>::iterator z = Z.begin(); z != Z.end(); ++z) {
+                rev_map[{*x,*y,*z}] = boost::add_vertex(g);
             }
         }
     }
 
+    //Arestas
+    for (std::set<int>::iterator x = X.begin(); x != X.end(); ++x) {
+        for (std::set<int>::iterator y = Y.begin(); y != Y.end(); ++y) {
+            for (std::set<int>::iterator z = Z.begin(); z != Z.end(); ++z) {
+                std::set<int>::iterator xp = x;
+                std::set<int>::iterator yp = y;
+                std::set<int>::iterator zp = z;
+
+                ++xp;
+                ++yp;
+                ++zp;
+
+                if (xp != X.end()) {
+                    boost::add_edge(rev_map[{*x,*y,*z}], rev_map[{*xp,*y,*z}], euclidian_dist({*x,*y,*z}, {*xp,*y,*z}), g);
+                }
+                if (yp != Y.end()) {
+                    boost::add_edge(rev_map[{*x,*y,*z}], rev_map[{*x,*yp,*z}], euclidian_dist({*x,*y,*z}, {*x,*yp,*z}), g);
+                }
+                if (zp != Z.end()) {
+                    boost::add_edge(rev_map[{*x,*y,*z}], rev_map[{*x,*y,*zp}], euclidian_dist({*x,*y,*z}, {*x,*y,*zp}), g);
+                }
+
+                //to_dot(g);
+            }
+        }
+    }
+/*
+
+if (yp != Y.end()) {
+
+}
+if (zp != Z.end()) {
+
+}
+*/
 
     //
     // for (int x : X) {

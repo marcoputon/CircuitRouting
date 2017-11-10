@@ -37,7 +37,7 @@ graph {
 */
 
 
-void G::to_dot() {
+void to_dot(Graph g) {
     EI ei, ei_end;
     std::string out;
     std::ofstream myfile;

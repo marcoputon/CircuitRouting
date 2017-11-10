@@ -70,10 +70,10 @@ struct G {
     void remove_edge_from_map(Edge);
     void print_edges();
     void print_edges_set();
-    void to_dot();
 };
 
 
+void to_dot(Graph);
 void print_edges(std::vector<E>, G);
 void print_edge(Edge e);
 int euclidian_dist(Vertex, Vertex);

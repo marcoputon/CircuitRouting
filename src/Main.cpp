@@ -31,7 +31,7 @@ int main(int argc, char* argv[]){
     /*
 */
 
-    C.g.to_dot();
+    //to_dot(C.g.g);
 
     time(&end);
     double dif = difftime(end, start);
