@@ -18,15 +18,12 @@ int main(int argc, char* argv[]){
 
     C.input_to_objects(argv[1]);
     C.move_obstacles_points();
-
     C.generate_hanan_grid();
-
     C.spanning_tree();
 
     string p = "print";
     if (argv[2] == p) {
         C.g.print_Vertex_map();
-        //C.g.print_edges_set();
     }
 
     time(&end);

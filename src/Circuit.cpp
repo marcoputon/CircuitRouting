@@ -138,7 +138,7 @@ void Circuit::generate_hanan_grid() {
         z_coord++;
     }
 
-    Graph g(X.size() * Y.size() * Z.size());
+    g.g = Graph(X.size() * Y.size() * Z.size());
 
     //Vertices
     for (std::set<int>::iterator x = X.begin(); x != X.end(); ++x) {
@@ -152,7 +152,7 @@ void Circuit::generate_hanan_grid() {
                     }
                 }
                 if (!flag) {
-                    V vd = boost::add_vertex(g);
+                    V vd = boost::add_vertex(g.g);
                     rev_map[{*x,*y,*z}] = vd;
                 }
             }
@@ -173,25 +173,26 @@ void Circuit::generate_hanan_grid() {
 
                 if (xp != X.end()){
                     if ((rev_map.find({*x,*y,*z}) != rev_map.end()) && (rev_map.find({*xp,*y,*z}) != rev_map.end()))
-                        boost::add_edge(rev_map[{*x,*y,*z}], rev_map[{*xp,*y,*z}], euclidian_dist({*x,*y,*z}, {*xp,*y,*z}), g);
+                        boost::add_edge(rev_map[{*x,*y,*z}], rev_map[{*xp,*y,*z}], euclidian_dist({*x,*y,*z}, {*xp,*y,*z}), g.g);
                 }
                 if (yp != Y.end()){
                     if ((rev_map.find({*x,*y,*z}) != rev_map.end()) && (rev_map.find({*x,*yp,*z}) != rev_map.end()))
-                        boost::add_edge(rev_map[{*x,*y,*z}], rev_map[{*x,*yp,*z}], euclidian_dist({*x,*y,*z}, {*x,*yp,*z}), g);
+                        boost::add_edge(rev_map[{*x,*y,*z}], rev_map[{*x,*yp,*z}], euclidian_dist({*x,*y,*z}, {*x,*yp,*z}), g.g);
                 }
                 if (zp != Z.end()){
                     if ((rev_map.find({*x,*y,*z}) != rev_map.end()) && (rev_map.find({*x,*y,*zp}) != rev_map.end()))
-                        boost::add_edge(rev_map[{*x,*y,*z}], rev_map[{*x,*y,*zp}], euclidian_dist({*x,*y,*z}, {*x,*y,*zp}), g);
+                        boost::add_edge(rev_map[{*x,*y,*z}], rev_map[{*x,*y,*zp}], euclidian_dist({*x,*y,*z}, {*x,*y,*zp}), g.g);
                 }
             }
         }
     }
-    //to_dot(g);
+    to_dot(g.g);
 }
 
 
 
 void Circuit::spanning_tree() {
+    std::cout << "Generatig MST\n";
     std::ofstream myfile;
     myfile.open("spanning.dot");
     myfile << "graph {\n";

@@ -10,7 +10,6 @@ G::G() {
     index = get(vertex_index, g);
 }
 
-
 bool Edge::operator< (const Edge& e) const {
     return (u < e.u) || (u == e.u && v < e.v);
 }
