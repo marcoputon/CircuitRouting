@@ -44,7 +44,6 @@ void to_dot(Graph g) {
     myfile.open("teste.dot");
     myfile << "graph {\n";
 
-
     for (boost::tie(ei, ei_end) = boost::edges(g); ei != ei_end; ++ei) {
         myfile << source(*ei, g) << " -- " << target(*ei, g) << "\n";
     }

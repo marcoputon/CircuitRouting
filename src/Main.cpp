@@ -28,10 +28,6 @@ int main(int argc, char* argv[]){
         C.g.print_Vertex_map();
         //C.g.print_edges_set();
     }
-    /*
-*/
-
-    //to_dot(C.g.g);
 
     time(&end);
     double dif = difftime(end, start);

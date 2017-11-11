@@ -104,7 +104,7 @@ void Circuit::generate_hanan_grid() {
     std::set<int> Z;
 
     std::vector<Vertex> vertices;
-    std::map<Vertex, int> rev_map;
+    std::map<Vertex, V> rev_map;
     std::set<Edge> grid;
 
     int z_coord = 1;
@@ -144,7 +144,17 @@ void Circuit::generate_hanan_grid() {
     for (std::set<int>::iterator x = X.begin(); x != X.end(); ++x) {
         for (std::set<int>::iterator y = Y.begin(); y != Y.end(); ++y) {
             for (std::set<int>::iterator z = Z.begin(); z != Z.end(); ++z) {
-                rev_map[{*x,*y,*z}] = boost::add_vertex(g);
+                bool flag = false;
+                for (Shape o : Layers[*z].Obstacles) {
+                    if (point_collide_rect({*x,*y,*z}, o)) {
+                        flag = true;
+                        break;
+                    }
+                }
+                if (!flag) {
+                    V vd = boost::add_vertex(g);
+                    rev_map[{*x,*y,*z}] = vd;
+                }
             }
         }
     }
@@ -161,38 +171,22 @@ void Circuit::generate_hanan_grid() {
                 ++yp;
                 ++zp;
 
-                if (xp != X.end()) {
-                    boost::add_edge(rev_map[{*x,*y,*z}], rev_map[{*xp,*y,*z}], euclidian_dist({*x,*y,*z}, {*xp,*y,*z}), g);
+                if (xp != X.end()){
+                    if ((rev_map.find({*x,*y,*z}) != rev_map.end()) && (rev_map.find({*xp,*y,*z}) != rev_map.end()))
+                        boost::add_edge(rev_map[{*x,*y,*z}], rev_map[{*xp,*y,*z}], euclidian_dist({*x,*y,*z}, {*xp,*y,*z}), g);
                 }
-                if (yp != Y.end()) {
-                    boost::add_edge(rev_map[{*x,*y,*z}], rev_map[{*x,*yp,*z}], euclidian_dist({*x,*y,*z}, {*x,*yp,*z}), g);
+                if (yp != Y.end()){
+                    if ((rev_map.find({*x,*y,*z}) != rev_map.end()) && (rev_map.find({*x,*yp,*z}) != rev_map.end()))
+                        boost::add_edge(rev_map[{*x,*y,*z}], rev_map[{*x,*yp,*z}], euclidian_dist({*x,*y,*z}, {*x,*yp,*z}), g);
                 }
-                if (zp != Z.end()) {
-                    boost::add_edge(rev_map[{*x,*y,*z}], rev_map[{*x,*y,*zp}], euclidian_dist({*x,*y,*z}, {*x,*y,*zp}), g);
+                if (zp != Z.end()){
+                    if ((rev_map.find({*x,*y,*z}) != rev_map.end()) && (rev_map.find({*x,*y,*zp}) != rev_map.end()))
+                        boost::add_edge(rev_map[{*x,*y,*z}], rev_map[{*x,*y,*zp}], euclidian_dist({*x,*y,*z}, {*x,*y,*zp}), g);
                 }
-
-                //to_dot(g);
             }
         }
     }
-/*
-
-if (yp != Y.end()) {
-
-}
-if (zp != Z.end()) {
-
-}
-*/
-
-    //
-    // for (int x : X) {
-    //     for (int y : Y) {
-    //         add_edge()
-    //     }
-    // }
-
-
+    //to_dot(g);
 }
 
 
