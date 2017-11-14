@@ -11,6 +11,8 @@ struct Circuit {
     Graph spanning;
     int Boundary; // Retângulo
     std::map<int, Layer> Layers;
+    Set_Pair XY;
+    std::map<Vertex, V> rev_map;
 
 
     void input_to_objects(string);
@@ -18,11 +20,12 @@ struct Circuit {
     void generate_hanan_grid(bool);
     void spanning_tree(bool);
     void remove_one_degree_vertices();
+    void close_component(Vertex, Vertex, Vertex);
+    void close_components_cycles();
 
     void remove_collision_with_obstacles(Set_Pair);
     void convert_to_boost();
     void connect_all_components();
-    void close_components_cycles();
     void add_zero_edges_to_components(Set_Pair);
     void draw();
     void generate_output();

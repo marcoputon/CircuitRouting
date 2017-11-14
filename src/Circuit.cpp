@@ -83,7 +83,6 @@ void Circuit::input_to_objects(string case_path){
 }
 
 
-
 void Circuit::move_obstacles_points() {
     std::cout << "Moving obstacle points\n";
     for (std::map<int, Layer>::iterator it = Layers.begin(); it != Layers.end(); ++it) {
@@ -96,6 +95,7 @@ bool point_collide_rect(Vertex v, Shape s) {
     return ((v[0] > s.A[0] && v[0] < s.B[0]) && (v[1] > s.D[1] && v[1] < s.A[1]));
 }
 
+
 void Circuit::generate_hanan_grid(bool gen_img) {
     std::cout << "Generating hanan grid\n";
 
@@ -104,7 +104,6 @@ void Circuit::generate_hanan_grid(bool gen_img) {
     std::set<int> Z;
 
     std::vector<Vertex> vertices;
-    std::map<Vertex, V> rev_map;
     std::set<Edge> grid;
 
     int z_coord = 1;
@@ -138,6 +137,7 @@ void Circuit::generate_hanan_grid(bool gen_img) {
         z_coord++;
     }
 
+    this->XY = Set_Pair(X, Y);
     g.g = Graph(X.size() * Y.size() * Z.size());
 
     int v_num = 0;
@@ -160,7 +160,6 @@ void Circuit::generate_hanan_grid(bool gen_img) {
             }
         }
     }
-    std::cout << "TAMANHO: " << X.size() * Y.size() * Z.size() << "\n" << boost::num_vertices(g.g) << "\n\n";
 
     //Arestas
     for (std::set<int>::iterator x = X.begin(); x != X.end(); ++x) {
@@ -194,13 +193,11 @@ void Circuit::generate_hanan_grid(bool gen_img) {
 }
 
 
-
 void Circuit::spanning_tree(bool gen_img) {
     std::vector <E> spanning_tree;
     boost::kruskal_minimum_spanning_tree(this->g.g, std::back_inserter(spanning_tree));
 
     spanning = Graph(boost::num_vertices(this->g.g));
-    int v_num = 0;
 
     for (E e : spanning_tree) {
         V vs = source(e, this->g.g);
@@ -229,20 +226,83 @@ void Circuit::spanning_tree(bool gen_img) {
 }
 
 
-void Circuit::remove_one_degree_vertices() {
-    // Ordenar por grau de vértice
+void Circuit::close_component(Vertex A, Vertex B, Vertex C) {
+    std::set<int> X, Y;
 
-    std::pair<VI, VI> vi;
-
-    for (vi = vertices(this->spanning); vi.first != vi.second; ++vi.first) {
-        std::cout << *vi.first << std::endl;
+    // subX
+    for (std::set<int>::iterator it = XY.first.find(A[0]); it != XY.first.find(B[0]); ++it) {
+        X.insert(*it);
     }
-    std::cout << "\n\n" << boost::num_vertices(this->spanning) << "\n";
+    X.insert(B[0]);
+    // subY
+    for (std::set<int>::iterator it = XY.second.find(C[1]); it != XY.second.find(B[1]); ++it) {
+        Y.insert(*it);
+    }
+    Y.insert(B[1]);
 
 
-    // Remover recursivamente vertices de grau 1
+    // Adiciona as arestas verticais
+    for (std::set<int>::iterator it_x = X.begin(); it_x != X.end(); ++it_x) {
+        for (std::set<int>::iterator it_y = Y.begin(); it_y != Y.end(); ++it_y) {
+            std::set<int>::iterator it_yp = it_y;
+            ++it_yp;
+            if (it_yp == Y.end())
+            break;
+
+            Vertex u = {*it_x, *it_y, A[2]};
+            Vertex v = {*it_x, *it_yp, A[2]};
+
+            boost::add_edge(this->rev_map[u], this->rev_map[v], 0, this->spanning);
+        }
+    }
+
+    // Adiciona as arestas horizontais
+    for (std::set<int>::iterator it_y = Y.begin(); it_y != Y.end(); ++it_y) {
+        for (std::set<int, bool>::iterator it_x = X.begin(); it_x != X.end(); ++it_x) {
+            std::set<int, bool>::iterator it_xp = it_x;
+            ++it_xp;
+            if (it_xp == X.end())
+            break;
+
+            Vertex u = {*it_x, *it_y, A[2]};
+            Vertex v = {*it_xp, *it_y, A[2]};
+
+            boost::add_edge(this->rev_map[u], this->rev_map[v], 0, this->spanning);
+        }
+    }
+}
 
 
+void Circuit::close_components_cycles() {
+    std::cout << "close_components_cycles\n";
+
+    for (std::map<int, Layer>::iterator it = Layers.begin(); it != Layers.end(); ++it) {
+        for (Shape c : it->second.Components) {
+            close_component(c.A, c.B, c.C);
+        }
+    }
+}
+
+
+void Circuit::remove_one_degree_vertices() {
+    std::cout << "remove_one_degree_vertices\n";
+    bool flag = true;
+    std::vector<bool> visited(num_vertices(this->spanning), false);
+
+
+    while (flag) {
+        flag = false;
+        for (std::pair<VI, VI> vi = boost::vertices(this->spanning); vi.first != vi.second; ++vi.first) {
+            if (!visited[*vi.first] && boost::degree(*vi.first, this->spanning) < 2) {
+                flag = true;
+                visited[*vi.first] = true;
+                boost::clear_vertex(*vi.first, this->spanning);
+                break;
+            }
+        }
+    }
+
+    to_dot(this->spanning);
 }
 
 

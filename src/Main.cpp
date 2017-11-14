@@ -20,6 +20,7 @@ int main(int argc, char* argv[]){
     C.move_obstacles_points();
     C.generate_hanan_grid(false);
     C.spanning_tree(false);
+    C.close_components_cycles();
     C.remove_one_degree_vertices();
 
     string p = "print";
