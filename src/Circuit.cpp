@@ -96,7 +96,7 @@ bool point_collide_rect(Vertex v, Shape s) {
     return ((v[0] > s.A[0] && v[0] < s.B[0]) && (v[1] > s.D[1] && v[1] < s.A[1]));
 }
 
-void Circuit::generate_hanan_grid() {
+void Circuit::generate_hanan_grid(bool gen_img) {
     std::cout << "Generating hanan grid\n";
 
     std::set<int> X;
@@ -140,6 +140,7 @@ void Circuit::generate_hanan_grid() {
 
     g.g = Graph(X.size() * Y.size() * Z.size());
 
+    int v_num = 0;
     //Vertices
     for (std::set<int>::iterator x = X.begin(); x != X.end(); ++x) {
         for (std::set<int>::iterator y = Y.begin(); y != Y.end(); ++y) {
@@ -152,12 +153,14 @@ void Circuit::generate_hanan_grid() {
                     }
                 }
                 if (!flag) {
-                    V vd = boost::add_vertex(g.g);
+                    V vd = v_num;
+                    v_num++;
                     rev_map[{*x,*y,*z}] = vd;
                 }
             }
         }
     }
+    std::cout << "TAMANHO: " << X.size() * Y.size() * Z.size() << "\n" << boost::num_vertices(g.g) << "\n\n";
 
     //Arestas
     for (std::set<int>::iterator x = X.begin(); x != X.end(); ++x) {
@@ -186,23 +189,77 @@ void Circuit::generate_hanan_grid() {
             }
         }
     }
-    to_dot(g.g);
+    if (gen_img)
+        to_dot(g.g);
 }
 
 
 
-void Circuit::spanning_tree() {
-    std::cout << "Generatig MST\n";
-    std::ofstream myfile;
-    myfile.open("spanning.dot");
-    myfile << "graph {\n";
-
+void Circuit::spanning_tree(bool gen_img) {
     std::vector <E> spanning_tree;
     boost::kruskal_minimum_spanning_tree(this->g.g, std::back_inserter(spanning_tree));
 
-    for (std::vector<E>::iterator ei = spanning_tree.begin(); ei != spanning_tree.end(); ++ei) {
-        myfile << source(*ei, this->g.g) << " -- " << target(*ei, this->g.g) << "\n";
+    spanning = Graph(boost::num_vertices(this->g.g));
+    int v_num = 0;
+
+    for (E e : spanning_tree) {
+        V vs = source(e, this->g.g);
+        V vt = target(e, this->g.g);
+        int w = boost::get(edge_weight, this->g.g, e);
+
+        boost::add_edge(vs, vt, w, spanning);
     }
-    myfile << "}";
-    myfile.close();
+    //to_dot(spanning);
+
+
+    if (gen_img){
+        std::cout << "Generatig MST\n";
+        std::ofstream myfile;
+        myfile.open("spanning.dot");
+        myfile << "graph {\n";
+
+        for (std::vector<E>::iterator ei = spanning_tree.begin(); ei != spanning_tree.end(); ++ei) {
+            myfile << source(*ei, this->g.g) << " -- " << target(*ei, this->g.g) << "\n";
+        }
+
+        myfile << "}";
+        myfile.close();
+    }
+
 }
+
+
+void Circuit::remove_one_degree_vertices() {
+    // Ordenar por grau de vértice
+
+    std::pair<VI, VI> vi;
+
+    for (vi = vertices(this->spanning); vi.first != vi.second; ++vi.first) {
+        std::cout << *vi.first << std::endl;
+    }
+    std::cout << "\n\n" << boost::num_vertices(this->spanning) << "\n";
+
+
+    // Remover recursivamente vertices de grau 1
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//
