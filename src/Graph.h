@@ -34,7 +34,7 @@ namespace std {
 }
 
 // Grafo é uma lista de adjacencia com lista de vértices, arestas, não dirigido e com peso nas arestas
-typedef adjacency_list <vecS, vecS, undirectedS, no_property, property <edge_weight_t, int>> Graph;
+typedef adjacency_list <vecS, setS, undirectedS, no_property, property <edge_weight_t, int>> Graph;
 
 // Bagulhos pra iterar nas arestas e vértices
 typedef graph_traits <Graph>::edge_descriptor E;

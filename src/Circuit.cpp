@@ -156,6 +156,7 @@ void Circuit::generate_hanan_grid(bool gen_img) {
                     V vd = v_num;
                     v_num++;
                     rev_map[{*x,*y,*z}] = vd;
+                    ver_map[vd] = {*x,*y,*z};
                 }
             }
         }
@@ -210,17 +211,39 @@ void Circuit::spanning_tree(bool gen_img) {
 
 
     if (gen_img){
-        std::cout << "Generatig MST\n";
+        EI ei, ei_end;
+        std::string out;
         std::ofstream myfile;
-        myfile.open("spanning.dot");
+        myfile.open("teste.dot");
         myfile << "graph {\n";
 
-        for (std::vector<E>::iterator ei = spanning_tree.begin(); ei != spanning_tree.end(); ++ei) {
-            myfile << source(*ei, this->g.g) << " -- " << target(*ei, this->g.g) << "\n";
+        for (boost::tie(ei, ei_end) = boost::edges(this->spanning); ei != ei_end; ++ei) {
+            Edge ne;
+            ne.u = ver_map[source(*ei, this->spanning)];
+            ne.v = ver_map[target(*ei, this->spanning)];
+
+            bool flag = false;
+            for (std::map<int, Layer>::iterator it = Layers.begin(); it != Layers.end(); ++it) {
+                for (Shape c : it->second.Components) {
+                    if (c.collide_with_edge(ne)) {
+                        flag = true;
+                        break;
+                    }
+                }
+                if (flag) break;
+            }
+
+            if (!flag) {
+                myfile << source(*ei, this->spanning) << " -- " << target(*ei, this->spanning) << "\n";
+            }
+            else {
+                myfile << source(*ei, this->spanning) << " -- " << target(*ei, this->spanning) << " [color=\"red\"]\n";
+            }
         }
 
         myfile << "}";
         myfile.close();
+        std::cout << out;
     }
 
 }
@@ -246,8 +269,7 @@ void Circuit::close_component(Vertex A, Vertex B, Vertex C) {
         for (std::set<int>::iterator it_y = Y.begin(); it_y != Y.end(); ++it_y) {
             std::set<int>::iterator it_yp = it_y;
             ++it_yp;
-            if (it_yp == Y.end())
-            break;
+            if (it_yp == Y.end()) break;
 
             Vertex u = {*it_x, *it_y, A[2]};
             Vertex v = {*it_x, *it_yp, A[2]};
@@ -261,8 +283,7 @@ void Circuit::close_component(Vertex A, Vertex B, Vertex C) {
         for (std::set<int, bool>::iterator it_x = X.begin(); it_x != X.end(); ++it_x) {
             std::set<int, bool>::iterator it_xp = it_x;
             ++it_xp;
-            if (it_xp == X.end())
-            break;
+            if (it_xp == X.end()) break;
 
             Vertex u = {*it_x, *it_y, A[2]};
             Vertex v = {*it_xp, *it_y, A[2]};
@@ -302,7 +323,41 @@ void Circuit::remove_one_degree_vertices() {
         }
     }
 
-    to_dot(this->spanning);
+    //to_dot(this->spanning);
+
+    EI ei, ei_end;
+    std::string out;
+    std::ofstream myfile;
+    myfile.open("grau1.dot");
+    myfile << "graph {\n";
+
+    for (boost::tie(ei, ei_end) = boost::edges(this->spanning); ei != ei_end; ++ei) {
+        Edge ne;
+        ne.u = ver_map[source(*ei, this->spanning)];
+        ne.v = ver_map[target(*ei, this->spanning)];
+
+        bool flag = false;
+        for (std::map<int, Layer>::iterator it = Layers.begin(); it != Layers.end(); ++it) {
+            for (Shape c : it->second.Components) {
+                if (c.collide_with_edge(ne)) {
+                    flag = true;
+                    break;
+                }
+            }
+            if (flag) break;
+        }
+
+        if (!flag) {
+            myfile << source(*ei, this->spanning) << " -- " << target(*ei, this->spanning) << "\n";
+        }
+        else {
+            myfile << source(*ei, this->spanning) << " -- " << target(*ei, this->spanning) << " [color=\"blue\"]\n";
+        }
+    }
+
+    myfile << "}";
+    myfile.close();
+    std::cout << out;
 }
 
 

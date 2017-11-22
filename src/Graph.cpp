@@ -10,6 +10,7 @@ G::G() {
     index = get(vertex_index, g);
 }
 
+
 bool Edge::operator< (const Edge& e) const {
     return (u < e.u) || (u == e.u && v < e.v);
 }
@@ -24,16 +25,6 @@ bool Edge::operator== (const Edge& x) const {
 void G::add_edge(V u, V v, int w) {
     boost::add_edge(u, v, w, g);
 }
-
-/*
-graph {
-	A [pos = "0,0"]
-	B [pos = "10,10"]
-
-	A -- B
-}
-
-*/
 
 
 void to_dot(Graph g) {
@@ -54,7 +45,6 @@ void to_dot(Graph g) {
 
 
 //  PRINT ----------------------------------------------------------------------------------------------------------------
-
 void G::print_vertices() {
     std::pair<VI, VI> vi;
 
@@ -73,13 +63,13 @@ void G::print_edges(){
     }
 }
 
+
 void G::print_Vertex_map() {
     for (std::map<Vertex,V>::iterator it = Vertex_map.begin(); it != Vertex_map.end(); ++it) {
         std::cout << "(" << it->first[0] << ", " << it->first[1] << ", " << it->first[2] << ") => " << it->second << '\n';
     }
 }
-/*
-*/
+
 
 void print_edges(std::vector <E> spanning_tree, G graph) {
     for (std::vector <E>::iterator ei = spanning_tree.begin(); ei != spanning_tree.end(); ++ei) {
@@ -88,6 +78,7 @@ void print_edges(std::vector <E> spanning_tree, G graph) {
                   << std::endl;
     }
 }
+
 
 void print_edge(Edge e) {
     std::cout << "(" << e.u[0] << ", " << e.u[1] << ", " << e.u[2] << ") - ("
@@ -99,6 +90,7 @@ void print_edge(Edge e) {
 int euclidian_dist(Vertex u, Vertex v) {
     return (sqrt(pow(u[0] - v[0], 2) + pow(u[1] - v[1], 2) + pow(u[2] - v[2], 2)));
 }
+
 
 void G::print_edges_set() {
     int i = 0;

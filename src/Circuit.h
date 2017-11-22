@@ -13,6 +13,7 @@ struct Circuit {
     std::map<int, Layer> Layers;
     Set_Pair XY;
     std::map<Vertex, V> rev_map;
+    std::map<V, Vertex> ver_map;
 
 
     void input_to_objects(string);

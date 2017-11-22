@@ -3,6 +3,8 @@
 #include <boost/algorithm/string.hpp>
 #include <boost/lexical_cast.hpp>
 
+
+
 void Layer::add_shape(std::vector<string> line) {
     Shape s;
     std::vector<string> splited;
@@ -29,6 +31,7 @@ void Layer::add_shape(std::vector<string> line) {
         Components.push_back(s);
 }
 
+
 void Layer::add_via(std::vector<string> line) {
     Via v;
     std::vector<string> splited;
@@ -45,6 +48,7 @@ void Layer::add_via(std::vector<string> line) {
     Vias.push_back(v);
 }
 
+
 void Layer::move_obstacles_points() {
     for (int i = 0; i < (int)this->Obstacles.size(); i++) {
         Shape obs = Obstacles.at(i);
@@ -56,10 +60,10 @@ void Layer::move_obstacles_points() {
 }
 
 
-
 void print_v(Vertex v) {
     std::cout << "(" << v[0] << ", " << v[1] << ", " << v[2] << ")\n";
 }
+
 
 void Layer::print_shapes(bool sh) {
     if (sh) {

@@ -10,6 +10,7 @@ struct Shape {
     Vertex C;
     Vertex D;
 
+    bool point_collision(Vertex);
     bool collide_with_edge(Edge);
     void draw();
 };
