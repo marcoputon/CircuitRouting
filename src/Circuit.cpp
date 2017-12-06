@@ -189,23 +189,70 @@ void Circuit::generate_hanan_grid(bool gen_img) {
             }
         }
     }
-    if (gen_img)
-        to_dot(g.g);
+    if (gen_img) to_dot(g.g);
+}
+
+
+void Circuit::components_edges(vector<nEdge>* edges) {
+    EI ei, ei_end;
+    for (boost::tie(ei, ei_end) = boost::edges(this->g.g); ei != ei_end; ++ei) {
+        Edge ne;
+        ne.u = ver_map[source(*ei, this->g.g)];
+        ne.v = ver_map[target(*ei, this->g.g)];
+
+        bool flag = false;
+        for (std::map<int, Layer>::iterator it = Layers.begin(); it != Layers.end(); ++it) {
+            for (Shape c : it->second.Components) {
+                if (c.collide_with_edge(ne)) {
+                    flag = true;
+                    break;
+                }
+            }
+            if (flag) break;
+        }
+
+        if (flag) {
+            edges->emplace_back(source(*ei, this->g.g), target(*ei, this->g.g), boost::get(edge_weight, this->g.g, *ei));
+            std::cout << "perdi\n";
+        }
+    }
 }
 
 
 void Circuit::spanning_tree(bool gen_img) {
     std::vector <E> spanning_tree;
-    boost::kruskal_minimum_spanning_tree(this->g.g, std::back_inserter(spanning_tree));
+
+
+
+
+
+    int num_edges = boost::num_edges(this->g.g);
+    MST mst(num_edges, &this->g.g);
+    vector<nEdge> components;
+    components_edges(&components);
+    std::cout << "\nAbobrinha: " << components.size() << "\n";
+
+
+
+
+
+    vector<nEdge> kruskal = mst.compute(1, components);
+    /*
+    std::cout << "\nNumero de arestas na mst: " << mst.edges.size() << "\n";
+    for (nEdge e : mst.compute(1, components)) {
+        std::cout << e.u << " - " << e.v << " - " << e.w << "\n";
+    }
+    */
+
+
+
+
+    //boost::kruskal_minimum_spanning_tree(this->g.g, std::back_inserter(spanning_tree));
 
     spanning = Graph(boost::num_vertices(this->g.g));
 
-    for (E e : spanning_tree) {
-        V vs = source(e, this->g.g);
-        V vt = target(e, this->g.g);
-        int w = boost::get(edge_weight, this->g.g, e);
-
-        boost::add_edge(vs, vt, w, spanning);
+    for (nEdge e : kruskal) {
+        boost::add_edge(e.u, e.v, e.w, spanning);
     }
     //to_dot(spanning);
 

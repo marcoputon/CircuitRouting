@@ -4,6 +4,9 @@
 #include <boost/graph/kruskal_min_spanning_tree.hpp>
 #include <map>
 #include <tr1/unordered_map>
+#include <vector>
+#include <algorithm>
+using namespace std;
 
 using namespace boost;
 
@@ -26,15 +29,13 @@ namespace std {
     class hash<Edge> {
         public:
             size_t operator()(const Edge &s) const {
-                //size_t h1 = std::hash<std::string>()(s.first_name);
-                //size_t h2 = std::hash<std::string>()(s.last_name);
-                return 0;//h1 ^ ( h2 << 1 );
+                return 0;
             }
     };
 }
 
 // Grafo é uma lista de adjacencia com lista de vértices, arestas, não dirigido e com peso nas arestas
-typedef adjacency_list <vecS, setS, undirectedS, no_property, property <edge_weight_t, int>> Graph;
+typedef adjacency_list <vecS, vecS, undirectedS, no_property, property <edge_weight_t, int>> Graph;
 
 // Bagulhos pra iterar nas arestas e vértices
 typedef graph_traits <Graph>::edge_descriptor E;
@@ -77,3 +78,89 @@ void to_dot(Graph);
 void print_edges(std::vector<E>, G);
 void print_edge(Edge e);
 int euclidian_dist(Vertex, Vertex);
+
+
+
+struct UF {
+    vector<int> rank;
+    vector<int> root;
+
+    UF(int n): rank(n, 0), root(n) {
+        for(int i = 0; i < n; ++i) root[i] = i;
+    }
+
+    int Find(int x) {
+        if (root[x] != x) {
+            root[x] = Find(root[x]);
+        }
+        return root[x];
+    }
+
+    void Union(int x, int y) {
+        if (rank[root[x]] > rank[root[y]]) {
+            root[root[y]] = root[x];
+        }
+        else if (rank[root[x]] < rank[root[y]]) {
+            root[root[x]] = root[y];
+        }
+        else {
+            root[root[y]] = root[x];
+            rank[x]++;
+        }
+    }
+};
+
+
+struct nEdge {
+    int u, v, w;
+
+    nEdge(int u_, int v_, int w_):u(u_), v(v_), w(w_) {}
+
+    friend bool operator<(const nEdge & a, const nEdge & b) {
+        return a.w < b.w;
+    }
+};
+
+
+struct MST {
+    vector<nEdge> edges;
+    vector<nEdge> result;
+
+    int n;
+    int sum;
+
+    MST(int n_, Graph* g): n(n_), sum(0) {
+        EI ei, ei_end;
+
+        for (boost::tie(ei, ei_end) = boost::edges(*g); ei != ei_end; ++ei) {
+            edges.emplace_back(source(*ei, *g), target(*ei, *g), boost::get(edge_weight, *g, *ei));
+        }
+    }
+
+    
+
+    vector<nEdge> compute(bool dir, vector<nEdge> components) {
+        UF uf(n);
+        if (dir) sort(edges.rbegin(), edges.rend());
+        else     sort(edges.begin(),  edges.end());
+
+        result.clear();
+        sum = 0;
+
+        // inserir os carinhas aqui
+        for (nEdge c : components) {
+            result.push_back(c);
+            uf.Union(c.u, c.v);
+            sum += c.w;
+        }
+
+        for(const nEdge & e : edges) {
+            if(uf.Find(e.u) != uf.Find(e.v)) {
+                result.push_back(e);
+                uf.Union(e.u, e.v);
+                sum += e.w;
+            }
+        }
+        return result;
+    }
+};

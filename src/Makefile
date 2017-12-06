@@ -5,6 +5,11 @@ all:
 	rm -f main
 	g++ -O2 *.cpp -o main -Wall
 
+test:
+	rm -f main
+	g++ -O2 *.cpp -o main -Wall
+	./main ../cases/case-3 no
+	
 graph:
 	rm -f main
 	g++ -O2 *.cpp -o main -Wall

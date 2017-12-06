@@ -33,6 +33,7 @@ struct UF {
     }
 };
 
+
 struct Edge {
     int u, v, w;
 
@@ -61,9 +62,9 @@ struct MST {
         result.clear();
         sum = 0;
 
+        
+
         for(const Edge & e : edges) {
-            //cout << "sum: " << sum << '\n';
-            //cout << "UF: " << e.u << ' ' << e.v << '\n';
             if(uf.Find(e.u) != uf.Find(e.v)) {
                 result.push_back(e);
                 uf.Union(e.u, e.v);
@@ -72,6 +73,7 @@ struct MST {
         }
     }
 };
+
 
 int main() {
     int n;
@@ -82,7 +84,6 @@ int main() {
     for(int i = 0; i < n; ++i) {
         int u, v, w;
         cin >> u >> v >> w;
-        //cout << "adding edges\n";
         mst.edges.emplace_back(u-1, v-1, w);
     }
 

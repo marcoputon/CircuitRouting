@@ -23,6 +23,7 @@ struct Circuit {
     void remove_one_degree_vertices();
     void close_component(Vertex, Vertex, Vertex);
     void close_components_cycles();
+    void components_edges(vector<nEdge>*);
 
     void remove_collision_with_obstacles(Set_Pair);
     void convert_to_boost();
