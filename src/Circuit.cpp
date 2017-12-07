@@ -213,7 +213,6 @@ void Circuit::components_edges(vector<nEdge>* edges) {
 
         if (flag) {
             edges->emplace_back(source(*ei, this->g.g), target(*ei, this->g.g), boost::get(edge_weight, this->g.g, *ei));
-            std::cout << "perdi\n";
         }
     }
 }
@@ -221,33 +220,13 @@ void Circuit::components_edges(vector<nEdge>* edges) {
 
 void Circuit::spanning_tree(bool gen_img) {
     std::vector <E> spanning_tree;
-
-
-
-
-
     int num_edges = boost::num_edges(this->g.g);
     MST mst(num_edges, &this->g.g);
     vector<nEdge> components;
+
     components_edges(&components);
-    std::cout << "\nAbobrinha: " << components.size() << "\n";
-
-
-
-
 
     vector<nEdge> kruskal = mst.compute(1, components);
-    /*
-    std::cout << "\nNumero de arestas na mst: " << mst.edges.size() << "\n";
-    for (nEdge e : mst.compute(1, components)) {
-        std::cout << e.u << " - " << e.v << " - " << e.w << "\n";
-    }
-    */
-
-
-
-
-    //boost::kruskal_minimum_spanning_tree(this->g.g, std::back_inserter(spanning_tree));
 
     spanning = Graph(boost::num_vertices(this->g.g));
 
@@ -352,11 +331,15 @@ void Circuit::close_components_cycles() {
 }
 
 
+string v_string(Vertex v) {
+    return string("(" + std::to_string(v[0]) + ", " + std::to_string(v[1]) + ", " + std::to_string(v[2]) + ")\n");
+}
+
+
 void Circuit::remove_one_degree_vertices() {
     std::cout << "remove_one_degree_vertices\n";
     bool flag = true;
     std::vector<bool> visited(num_vertices(this->spanning), false);
-
 
     while (flag) {
         flag = false;
@@ -369,13 +352,12 @@ void Circuit::remove_one_degree_vertices() {
             }
         }
     }
-
     //to_dot(this->spanning);
 
     EI ei, ei_end;
-    std::string out;
-    std::ofstream myfile;
+    std::ofstream myfile, result;
     myfile.open("grau1.dot");
+    result.open("result.out");
     myfile << "graph {\n";
 
     for (boost::tie(ei, ei_end) = boost::edges(this->spanning); ei != ei_end; ++ei) {
@@ -394,17 +376,20 @@ void Circuit::remove_one_degree_vertices() {
             if (flag) break;
         }
 
+        // RESULTADO
         if (!flag) {
             myfile << source(*ei, this->spanning) << " -- " << target(*ei, this->spanning) << "\n";
+            result << v_string(ver_map[source(*ei, this->spanning)]);
+            result << v_string(ver_map[target(*ei, this->spanning)]);
+            result << "\n";
         }
+        // COMPONENTES
         else {
             myfile << source(*ei, this->spanning) << " -- " << target(*ei, this->spanning) << " [color=\"blue\"]\n";
         }
     }
-
     myfile << "}";
     myfile.close();
-    std::cout << out;
 }
 
 

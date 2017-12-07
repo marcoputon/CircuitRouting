@@ -137,8 +137,6 @@ struct MST {
         }
     }
 
-    
-
     vector<nEdge> compute(bool dir, vector<nEdge> components) {
         UF uf(n);
         if (dir) sort(edges.rbegin(), edges.rend());
@@ -147,7 +145,8 @@ struct MST {
         result.clear();
         sum = 0;
 
-        // inserir os carinhas aqui
+        /* Insere as arestas dos componentes no conjunto solução para não gerar
+        ciclos com vértices de camadas adjacentes */
         for (nEdge c : components) {
             result.push_back(c);
             uf.Union(c.u, c.v);
