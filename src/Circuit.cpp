@@ -240,7 +240,7 @@ void Circuit::spanning_tree(bool gen_img) {
         EI ei, ei_end;
         std::string out;
         std::ofstream myfile;
-        myfile.open("teste.dot");
+        myfile.open("out/teste.dot");
         myfile << "graph {\n";
 
         for (boost::tie(ei, ei_end) = boost::edges(this->spanning); ei != ei_end; ++ei) {
@@ -356,8 +356,8 @@ void Circuit::remove_one_degree_vertices() {
 
     EI ei, ei_end;
     std::ofstream myfile, result;
-    myfile.open("grau1.dot");
-    result.open("result.out");
+    myfile.open("out/grau1.dot");
+    result.open("out/result.out");
     myfile << "graph {\n";
 
     for (boost::tie(ei, ei_end) = boost::edges(this->spanning); ei != ei_end; ++ei) {
