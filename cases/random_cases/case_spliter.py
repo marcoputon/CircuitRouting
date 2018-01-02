@@ -35,5 +35,29 @@ def generate_case(path, quant):
     return new_case
 
 
-new_case = generate_case("../case1", (3, 3, 3))
-print(new_case)
+
+OUT_PATH = "./"
+IN_PATH  = "../case1"  # (1503, 3, 414)
+'''
+IN_PATH  = "../case2"  # (4518, 34, 4773)
+IN_PATH  = "../case3"  # (97146, 52, 79012)
+'''
+MAX_SHAPES = 5
+MAX_VIAS = 3
+MAX_OBSTACLES = 5
+
+s = v = o = 1
+for i in range(max([MAX_SHAPES, MAX_VIAS, MAX_OBSTACLES])):
+    new_case = generate_case(IN_PATH, (s, v, o))
+
+    path = str(s) + "-" + str(v) + "-" + str(o)
+    f = open(path, 'w')
+    f.write(new_case)
+    f.close()
+
+    if s <= MAX_SHAPES:
+        s += 1
+    if s <= MAX_VIAS:
+        v += 1
+    if s <= MAX_OBSTACLES:
+        o += 1
