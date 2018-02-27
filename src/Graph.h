@@ -119,6 +119,12 @@ struct nEdge {
     friend bool operator<(const nEdge & a, const nEdge & b) {
         return a.w < b.w;
     }
+    friend bool operator!=(const nEdge & a, const nEdge & b) {
+        return !((a.u == b.u and a.v == b.v and a.w == b.w) || (a.u == b.v and a.v == b.u and a.w == b.w));
+    }
+    friend bool operator==(const nEdge & a, const nEdge & b) {
+        return ((a.u == b.u and a.v == b.v and a.w == b.w) || (a.u == b.v and a.v == b.u and a.w == b.w));
+    }
 };
 
 

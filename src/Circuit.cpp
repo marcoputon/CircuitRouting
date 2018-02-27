@@ -140,6 +140,7 @@ void Circuit::generate_hanan_grid(bool gen_img) {
 
     this->XY = Set_Pair(X, Y);
     g.g = Graph(X.size() * Y.size() * Z.size());
+
     std::cout << "  Creating vertices\n";
     int v_num = 0;
     //Vertices
@@ -220,18 +221,84 @@ void Circuit::components_edges(vector<nEdge>* edges) {
 }
 
 
+void Circuit::componentEdges(Vertex A, Vertex B, Vertex C, vector<nEdge>* edges) {
+    std::set<int> X, Y;
+
+    // subX
+    for (std::set<int>::iterator it = XY.first.find(A[0]); it != XY.first.find(B[0]); ++it) {
+        X.insert(*it);
+    }
+    X.insert(B[0]);
+    // subY
+    for (std::set<int>::iterator it = XY.second.find(C[1]); it != XY.second.find(B[1]); ++it) {
+        Y.insert(*it);
+    }
+    Y.insert(B[1]);
+
+
+    // Adiciona as arestas verticais
+    for (std::set<int>::iterator it_x = X.begin(); it_x != X.end(); ++it_x) {
+        for (std::set<int>::iterator it_y = Y.begin(); it_y != Y.end(); ++it_y) {
+            std::set<int>::iterator it_yp = it_y;
+            ++it_yp;
+            if (it_yp == Y.end()) break;
+
+            Vertex u = {*it_x, *it_y, A[2]};
+            Vertex v = {*it_x, *it_yp, A[2]};
+            nEdge ne = nEdge(this->rev_map[u], this->rev_map[v], euclidian_dist(u, v));
+            if(std::find(edges->begin(), edges->end(), ne) == edges->end())
+                edges->push_back(ne);
+        }
+    }
+
+    // Adiciona as arestas horizontais
+    for (std::set<int>::iterator it_y = Y.begin(); it_y != Y.end(); ++it_y) {
+        for (std::set<int, bool>::iterator it_x = X.begin(); it_x != X.end(); ++it_x) {
+            std::set<int, bool>::iterator it_xp = it_x;
+            ++it_xp;
+            if (it_xp == X.end()) break;
+
+            Vertex u = {*it_x, *it_y, A[2]};
+            Vertex v = {*it_xp, *it_y, A[2]};
+
+            nEdge ne = nEdge(this->rev_map[u], this->rev_map[v], euclidian_dist(u, v));
+            if(std::find(edges->begin(), edges->end(), ne) == edges->end())
+                edges->push_back(ne);
+        }
+    }
+}
+
+
+void Circuit::components_edges2(vector<nEdge>* edges) {
+    for (std::map<int, Layer>::iterator it = Layers.begin(); it != Layers.end(); ++it) {
+        for (Shape c : it->second.Components) {
+            componentEdges(c.A, c.B, c.C, edges);
+        }
+    }
+}
+
+
 void Circuit::spanning_tree(bool gen_img) {
     std::cout << "Spanning tree\n";
     std::vector <E> spanning_tree;
     int num_edges = boost::num_edges(this->g.g);
     MST mst(num_edges, &this->g.g);
     vector<nEdge> components;
+    vector<nEdge> components2;
 
     std::cout << "  Getting component edges\n";
     components_edges(&components);
+    /*components_edges2(&components2);
+    std::cout << components.size() << " - " << components2.size() << "\n";
 
+
+    for (int i = 0; i < components.size(); i++) {
+        std::cout << components[i].u  << "<->" << components[i].v << ": " << components[i].w << " / " << components2[i].u  << "<->" << components2[i].v << ": " << components2[i].w << "\n";
+    }
+    */
     std::cout << "  Finding spanning tree\n";
     vector<nEdge> kruskal = mst.compute(1, components);
+    std::cout << "  Done finding spanning tree\n";
 
     spanning = Graph(boost::num_vertices(this->g.g));
 
