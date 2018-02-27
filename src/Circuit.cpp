@@ -108,6 +108,7 @@ void Circuit::generate_hanan_grid(bool gen_img) {
 
     int z_coord = 1;
 
+    std::cout << "  Getting coordinates\n";
     for (std::map<int, Layer>::iterator it = Layers.begin(); it != Layers.end(); ++it) {
         for (Shape c : it->second.Components) {
             X.insert(c.A[0]);
@@ -139,7 +140,7 @@ void Circuit::generate_hanan_grid(bool gen_img) {
 
     this->XY = Set_Pair(X, Y);
     g.g = Graph(X.size() * Y.size() * Z.size());
-
+    std::cout << "  Creating vertices\n";
     int v_num = 0;
     //Vertices
     for (std::set<int>::iterator x = X.begin(); x != X.end(); ++x) {
@@ -162,6 +163,7 @@ void Circuit::generate_hanan_grid(bool gen_img) {
         }
     }
 
+    std::cout << "  Creating edges\n";
     //Arestas
     for (std::set<int>::iterator x = X.begin(); x != X.end(); ++x) {
         for (std::set<int>::iterator y = Y.begin(); y != Y.end(); ++y) {
@@ -219,13 +221,16 @@ void Circuit::components_edges(vector<nEdge>* edges) {
 
 
 void Circuit::spanning_tree(bool gen_img) {
+    std::cout << "Spanning tree\n";
     std::vector <E> spanning_tree;
     int num_edges = boost::num_edges(this->g.g);
     MST mst(num_edges, &this->g.g);
     vector<nEdge> components;
 
+    std::cout << "  Getting component edges\n";
     components_edges(&components);
 
+    std::cout << "  Finding spanning tree\n";
     vector<nEdge> kruskal = mst.compute(1, components);
 
     spanning = Graph(boost::num_vertices(this->g.g));
@@ -365,7 +370,8 @@ void Circuit::remove_one_degree_vertices() {
         ne.u = ver_map[source(*ei, this->spanning)];
         ne.v = ver_map[target(*ei, this->spanning)];
 
-        bool flag = false;
+        // VVV Isso tudo é pra colocar cor diferente nas arestas dos componentes VVV
+        /* bool flag = false;
         for (std::map<int, Layer>::iterator it = Layers.begin(); it != Layers.end(); ++it) {
             for (Shape c : it->second.Components) {
                 if (c.collide_with_edge(ne)) {
@@ -378,15 +384,19 @@ void Circuit::remove_one_degree_vertices() {
 
         // RESULTADO
         if (!flag) {
+        */
             myfile << source(*ei, this->spanning) << " -- " << target(*ei, this->spanning) << "\n";
             result << v_string(ver_map[source(*ei, this->spanning)]);
             result << v_string(ver_map[target(*ei, this->spanning)]);
             result << "\n";
+        /*
         }
         // COMPONENTES
         else {
             myfile << source(*ei, this->spanning) << " -- " << target(*ei, this->spanning) << " [color=\"blue\"]\n";
         }
+        // AAA Isso tudo é pra colocar cor diferente nas arestas dos componentes AAA
+        */
     }
     myfile << "}";
     myfile.close();
