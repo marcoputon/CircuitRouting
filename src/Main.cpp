@@ -20,6 +20,9 @@ int main(int argc, char* argv[]){
     C.spanning_tree(false);
     C.close_components_cycles();
     C.remove_one_degree_vertices();
+    C.generate_output();
+
+
 
     string p = "print";
     if (argv[2] == p) {

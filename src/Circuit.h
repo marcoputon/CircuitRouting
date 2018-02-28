@@ -34,4 +34,5 @@ struct Circuit {
     void draw();
     void generate_output();
     void remove_zero_edges();
+
 };

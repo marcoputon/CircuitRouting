@@ -14,6 +14,7 @@ using namespace boost;
 typedef std::pair<std::set<int>, std::set<int>> Set_Pair;
 typedef std::pair<std::vector<int>, std::vector<int>> Vector_Pair;
 typedef std::array<int, 3> Vertex;
+typedef std::vector<std::pair<Vertex, Vertex>> Pair_Vector;
 
 struct Edge {
     Vertex u;

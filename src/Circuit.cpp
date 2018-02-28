@@ -407,11 +407,20 @@ string v_string(Vertex v) {
     return string("(" + std::to_string(v[0]) + ", " + std::to_string(v[1]) + ", " + std::to_string(v[2]) + ")\n");
 }
 
+/*
+struct less_than_key {
+    inline bool operator() (const MyStruct& struct1, const MyStruct& struct2) {
+        return (struct1.key < struct2.key);
+    }
+};
+*/
 
 void Circuit::remove_one_degree_vertices() {
     std::cout << "remove_one_degree_vertices\n";
     bool flag = true;
     std::vector<bool> visited(num_vertices(this->spanning), false);
+
+    //std::sort(vec.begin(), vec.end(), less_than_key());
 
     while (flag) {
         flag = false;
@@ -470,7 +479,37 @@ void Circuit::remove_one_degree_vertices() {
 }
 
 
+void Circuit::generate_output() {
+    EI ei, ei_end;
+    std::vector<Edge> output;
 
+    for (boost::tie(ei, ei_end) = boost::edges(this->spanning); ei != ei_end; ++ei) {
+        Edge ne;
+        ne.u = ver_map[source(*ei, this->spanning)];
+        ne.v = ver_map[target(*ei, this->spanning)];
+
+        if(std::find(output.begin(), output.end(), ne) == output.end())
+            output.push_back(ne);
+    }
+
+    std::string out;
+    std::ofstream myfile;
+    myfile.open("out/saida.txt");
+
+
+    for (Edge e : output) {
+        if (e.u[2] != e.v[2]) { // Via
+            myfile << "Via V" << e.u[2] << " (" << e.u[0] << "," << e.u[1] << ")\n";
+        }
+        else if (e.u[0] == e.v[0]) { // Vertical
+            myfile << "V-line M" << e.u[2] << " (" << e.u[0] << "," << e.u[1] << ") (" << e.v[0] << "," << e.v[1] << ")" << "\n";
+        }
+        else { // Horizontal
+            myfile << "H-line M" << e.u[2] << " (" << e.u[0] << "," << e.u[1] << ") (" << e.v[0] << "," << e.v[1] << ")" << "\n";
+        }
+    }
+
+}
 
 
 
