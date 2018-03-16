@@ -1,5 +1,6 @@
 #define GRAPH_H 1
 
+#include <boost/graph/adjacency_iterator.hpp>
 #include <boost/graph/adjacency_list.hpp>
 #include <boost/graph/kruskal_min_spanning_tree.hpp>
 #include <map>
@@ -44,6 +45,7 @@ typedef graph_traits <Graph>::edge_iterator EI;
 typedef graph_traits <Graph>::vertex_descriptor V;
 typedef graph_traits <Graph>::vertex_iterator VI;
 typedef property_map<Graph, vertex_index_t>::type IndexMap;
+typedef graph_traits <Graph>::adjacency_iterator AI;
 
 
 //  Estrutura do Grafo

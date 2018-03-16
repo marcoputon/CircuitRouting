@@ -422,6 +422,25 @@ void Circuit::remove_one_degree_vertices() {
 
     //std::sort(vec.begin(), vec.end(), less_than_key());
 
+
+    std::vector<std::set<V>> arvore(7);
+
+    std::cout << "PERDI\n";
+    for (std::pair<VI, VI> vi = boost::vertices(this->spanning); vi.first != vi.second; ++vi.first) {
+        std::cout << boost::degree(*vi.first, this->spanning) << "\n";
+        arvore[boost::degree(*vi.first, this->spanning)].insert(*vi.first);
+    }
+
+    for (V v : arvore[1]) {
+        std::pair<AI, AI> ai = boost::adjacent_vertices(v, this->spanning);
+        arvore[boost::degree(*ai.first, this->spanning) - 1].insert(*ai.first);
+        arvore[boost::degree(*ai.first, this->spanning)].erase(*ai.first);
+        arvore[1].erase(v);
+        boost::clear_vertex(v, this->spanning);
+    }
+    /*
+*/
+/*
     while (flag) {
         flag = false;
         for (std::pair<VI, VI> vi = boost::vertices(this->spanning); vi.first != vi.second; ++vi.first) {
@@ -434,7 +453,7 @@ void Circuit::remove_one_degree_vertices() {
         }
     }
     //to_dot(this->spanning);
-
+*/
     EI ei, ei_end;
     std::ofstream myfile, result;
     myfile.open("out/grau1.dot");
