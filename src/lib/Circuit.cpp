@@ -417,30 +417,28 @@ struct less_than_key {
 
 void Circuit::remove_one_degree_vertices() {
     std::cout << "remove_one_degree_vertices\n";
-    bool flag = true;
+    //bool flag = true;
     std::vector<bool> visited(num_vertices(this->spanning), false);
 
     //std::sort(vec.begin(), vec.end(), less_than_key());
 
 
-    std::vector<std::set<V>> arvore(7);
+    std::vector<std::set<V>> arvore(11);
 
-    std::cout << "PERDI\n";
     for (std::pair<VI, VI> vi = boost::vertices(this->spanning); vi.first != vi.second; ++vi.first) {
-        std::cout << boost::degree(*vi.first, this->spanning) << "\n";
         arvore[boost::degree(*vi.first, this->spanning)].insert(*vi.first);
     }
 
-    for (V v : arvore[1]) {
-        std::pair<AI, AI> ai = boost::adjacent_vertices(v, this->spanning);
+    for (std::set<V>::iterator v = arvore[1].begin(); v != arvore[1].end(); ) {
+        std::pair<AI, AI> ai = boost::adjacent_vertices(*v, this->spanning);
         arvore[boost::degree(*ai.first, this->spanning) - 1].insert(*ai.first);
         arvore[boost::degree(*ai.first, this->spanning)].erase(*ai.first);
-        arvore[1].erase(v);
-        boost::clear_vertex(v, this->spanning);
+        arvore[1].erase(*v);
+        boost::clear_vertex(*v, this->spanning);
+        v = arvore[1].begin();
     }
+
     /*
-*/
-/*
     while (flag) {
         flag = false;
         for (std::pair<VI, VI> vi = boost::vertices(this->spanning); vi.first != vi.second; ++vi.first) {
@@ -453,7 +451,7 @@ void Circuit::remove_one_degree_vertices() {
         }
     }
     //to_dot(this->spanning);
-*/
+
     EI ei, ei_end;
     std::ofstream myfile, result;
     myfile.open("out/grau1.dot");
@@ -466,7 +464,7 @@ void Circuit::remove_one_degree_vertices() {
         ne.v = ver_map[target(*ei, this->spanning)];
 
         // VVV Isso tudo é pra colocar cor diferente nas arestas dos componentes VVV
-        /* bool flag = false;
+         bool flag = false;
         for (std::map<int, Layer>::iterator it = Layers.begin(); it != Layers.end(); ++it) {
             for (Shape c : it->second.Components) {
                 if (c.collide_with_edge(ne)) {
@@ -479,22 +477,23 @@ void Circuit::remove_one_degree_vertices() {
 
         // RESULTADO
         if (!flag) {
-        */
+
             myfile << source(*ei, this->spanning) << " -- " << target(*ei, this->spanning) << "\n";
             result << v_string(ver_map[source(*ei, this->spanning)]);
             result << v_string(ver_map[target(*ei, this->spanning)]);
             result << "\n";
-        /*
+
         }
         // COMPONENTES
         else {
             myfile << source(*ei, this->spanning) << " -- " << target(*ei, this->spanning) << " [color=\"blue\"]\n";
         }
         // AAA Isso tudo é pra colocar cor diferente nas arestas dos componentes AAA
-        */
+
     }
     myfile << "}";
     myfile.close();
+    */
 }
 
 
@@ -531,7 +530,33 @@ void Circuit::generate_output() {
 }
 
 
+void Circuit::connect_all_components() {
+    /*
+        grafo = Grafo()
+        for i in componentes:
+            for j in components[1:]:
+                grafo.add(boost.astar(i, j, hanan))
+    */
+    Graph bi1s_n = Graph(boost::num_vertices(this->g.g));
 
+    // Iterar nos componentes de todas as camadas
+    for (std::map<int, Layer>::iterator it = Layers.begin(); it != Layers.end(); ++it) { // Itera nas camadas
+        for (std::vector<Shape>::iterator si = it->second.Components.begin(); si != it->second.Components.end(); ++si) { // Itera nos shapes das camadas
+
+            std::vector<Shape>::iterator siN = si;
+            ++siN;
+            for (std::map<int, Layer>::iterator jt = it; jt != Layers.end(); ++jt) {
+                for (std::vector<Shape>::iterator sij = siN; sij != jt->second.Components.end(); ++sij) { // Itera nos shapes das camadas
+                    // Adicionar caminho (si <--> sij)
+                    
+                }
+                ++jt;
+                siN = jt->second.Components.begin();
+                --jt;
+            }
+        }
+    }
+}
 
 
 

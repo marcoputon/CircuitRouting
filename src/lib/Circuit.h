@@ -7,7 +7,7 @@ using namespace std;
 
 struct Circuit {
     int ViaCost, Spacing, N_MetalLayers, N_RoutedShapes, N_RoutedVias, N_Obstacles;
-    G g;
+    G g; // A grade de hanan é colocada aqui
     Graph spanning;
     int Boundary; // Retângulo
     std::map<int, Layer> Layers;
