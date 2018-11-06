@@ -346,6 +346,45 @@ void Circuit::spanning_tree(bool gen_img) {
 
 }
 
+std::set<Vertex> Circuit::component_vertices (Vertex A, Vertex B, Vertex C) {
+    std::set<int> X, Y;
+    std::set<Vertex> subV;
+
+    // subX
+    for (std::set<int>::iterator it = XY.first.find(A[0]); it != XY.first.find(B[0]); ++it) {
+        X.insert(*it);
+    }
+    X.insert(B[0]);
+    // subY
+    for (std::set<int>::iterator it = XY.second.find(C[1]); it != XY.second.find(B[1]); ++it) {
+        Y.insert(*it);
+    }
+    Y.insert(B[1]);
+
+
+    // Adiciona as arestas verticais
+    for (auto x : X) {
+        for (auto y : Y) {
+            subV.insert({x, y, A[2]});
+        }
+    }
+    return subV;
+}
+
+void Circuit::components_vertices(std::set<Vertex> * c_vertices) {
+    //std::cout << "components_verticeSJHAGJDGHKJASDHs\n";
+    // std::set<Vertex> c_vertices;
+    for (std::map<int, Layer>::iterator it = Layers.begin(); it != Layers.end(); ++it) {
+        for (Shape c : it->second.Components) {
+            for (auto v : component_vertices(c.A, c.B, c.C)) {
+                c_vertices->insert(v);
+                //std::cout << "perdi";
+            }
+        }
+    }
+    //std::cout << c_vertices.size() << "\n";
+    // return c_vertices;
+}
 
 void Circuit::close_component(Vertex A, Vertex B, Vertex C) {
     std::set<int> X, Y;
@@ -415,29 +454,62 @@ struct less_than_key {
 };
 */
 
+std::vector<bool> visited;
+std::vector<bool> alive;
+std::set<Vertex> comp_vertices;
+
+bool Circuit::isComponent (V n) {
+    return comp_vertices.find(ver_map[n]) != comp_vertices.end();
+}
+
+bool Circuit::remove (int n) {
+    //std::cout << "remove\n";
+    if (visited[n]) {
+        return alive[n];
+    }
+
+    visited[n] = true;
+    //std::cout << n << " - ";
+    if (isComponent(n)) {
+        alive[n] = true;
+    }
+
+    for (auto v : boost::make_iterator_range(boost::adjacent_vertices(n, this->spanning))) {
+        //std::cout << "v/" << n << "-" << v << ":" << visited[v] << "\n";
+        if (!visited[v]) {
+            alive[n] = remove(v) || alive[n];
+        }
+    }
+    return alive[n];
+}
+
 void Circuit::remove_one_degree_vertices() {
     std::cout << "remove_one_degree_vertices\n";
     //bool flag = true;
-    std::vector<bool> visited(num_vertices(this->spanning), false);
 
-    //std::sort(vec.begin(), vec.end(), less_than_key());
+    long num = num_vertices(this->spanning);
+    std::cout << "  Number of vertices: " << num << "\n";
+    std::vector<bool> visited1(num, false);
+    std::vector<bool> alive1(num, false);
+    std::set<Vertex> comp_vertices1;
+    components_vertices(&comp_vertices1);
+    // std::cout << comp_vertices1.size() << "\n\n\n";
+    visited = visited1;
+    alive = alive1;
+    comp_vertices = comp_vertices1;
+    Vertex start = *comp_vertices1.begin();
+    auto perdi = this->rev_map[start];
+    this->remove(perdi);
 
-
-    std::vector<std::set<V>> arvore(11);
-
-    for (std::pair<VI, VI> vi = boost::vertices(this->spanning); vi.first != vi.second; ++vi.first) {
-        arvore[boost::degree(*vi.first, this->spanning)].insert(*vi.first);
-    }
-
-    for (std::set<V>::iterator v = arvore[1].begin(); v != arvore[1].end(); ) {
-        std::pair<AI, AI> ai = boost::adjacent_vertices(*v, this->spanning);
-        arvore[boost::degree(*ai.first, this->spanning) - 1].insert(*ai.first);
-        arvore[boost::degree(*ai.first, this->spanning)].erase(*ai.first);
-        arvore[1].erase(*v);
-        boost::clear_vertex(*v, this->spanning);
-        v = arvore[1].begin();
-    }
-
+    // int c = 0;
+    // for (auto i : alive) {
+    //     if (i) {
+    //         std::cout << c << "-";
+    //         print_v(this->ver_map[c]);
+    //     }
+    //     // std::cout << "\n";
+    //     c++;
+    // }
     /*
     while (flag) {
         flag = false;
@@ -451,7 +523,14 @@ void Circuit::remove_one_degree_vertices() {
         }
     }
     //to_dot(this->spanning);
-
+*/
+    int soma = 0;
+    for (int i : alive) {
+        if (i) soma++;
+    }
+    std::cout << "Result size (vertices): " << soma << "\n";
+/*
+    std::cout << "Generating result file\n\n";
     EI ei, ei_end;
     std::ofstream myfile, result;
     myfile.open("out/grau1.dot");
@@ -464,29 +543,31 @@ void Circuit::remove_one_degree_vertices() {
         ne.v = ver_map[target(*ei, this->spanning)];
 
         // VVV Isso tudo é pra colocar cor diferente nas arestas dos componentes VVV
-         bool flag = false;
-        for (std::map<int, Layer>::iterator it = Layers.begin(); it != Layers.end(); ++it) {
-            for (Shape c : it->second.Components) {
-                if (c.collide_with_edge(ne)) {
-                    flag = true;
-                    break;
-                }
-            }
-            if (flag) break;
-        }
+        // bool flag = false;
+        // for (std::map<int, Layer>::iterator it = Layers.begin(); it != Layers.end(); ++it) {
+        //     for (Shape c : it->second.Components) {
+        //         if (c.collide_with_edge(ne)) {
+        //             flag = true;
+        //             break;
+        //         }
+        //     }
+        //     if (flag) break;
+        // }
 
         // RESULTADO
-        if (!flag) {
-
-            myfile << source(*ei, this->spanning) << " -- " << target(*ei, this->spanning) << "\n";
+        // if () {
+        //     myfile << source(*ei, this->spanning) << " -- " << target(*ei, this->spanning) << "\n";
+        //     result << v_string(ver_map[source(*ei, this->spanning)]);
+        //     result << v_string(ver_map[target(*ei, this->spanning)]);
+        //     result << "\n";
+        //
+        // }
+        // COMPONENTES
+        if (alive[source(*ei, this->spanning)] and alive[target(*ei, this->spanning)]) {
+            myfile << source(*ei, this->spanning) << " -- " << target(*ei, this->spanning) << " [color=\"blue\"]\n";
             result << v_string(ver_map[source(*ei, this->spanning)]);
             result << v_string(ver_map[target(*ei, this->spanning)]);
             result << "\n";
-
-        }
-        // COMPONENTES
-        else {
-            myfile << source(*ei, this->spanning) << " -- " << target(*ei, this->spanning) << " [color=\"blue\"]\n";
         }
         // AAA Isso tudo é pra colocar cor diferente nas arestas dos componentes AAA
 
@@ -498,6 +579,38 @@ void Circuit::remove_one_degree_vertices() {
 
 
 void Circuit::generate_output() {
+    // EI ei, ei_end;
+    // std::vector<Edge> output;
+    //
+    // for (boost::tie(ei, ei_end) = boost::edges(this->spanning); ei != ei_end; ++ei) {
+    //     Edge ne;
+    //     ne.u = ver_map[source(*ei, this->spanning)];
+    //     ne.v = ver_map[target(*ei, this->spanning)];
+    //
+    //     if(std::find(output.begin(), output.end(), ne) == output.end())
+    //         output.push_back(ne);
+    // }
+    //
+    // std::string out;
+    // std::ofstream myfile;
+    // myfile.open("out/saida.txt");
+    //
+    //
+    // for (Edge e : output) {
+    //     if (e.u[2] != e.v[2]) { // Via
+    //         myfile << "Via V" << e.u[2] << " (" << e.u[0] << "," << e.u[1] << ")\n";
+    //     }
+    //     else if (e.u[0] == e.v[0]) { // Vertical
+    //         myfile << "V-line M" << e.u[2] << " (" << e.u[0] << "," << e.u[1] << ") (" << e.v[0] << "," << e.v[1] << ")" << "\n";
+    //     }
+    //     else { // Horizontal
+    //         myfile << "H-line M" << e.u[2] << " (" << e.u[0] << "," << e.u[1] << ") (" << e.v[0] << "," << e.v[1] << ")" << "\n";
+    //     }
+    // }
+    std::string out;
+    std::ofstream myfile;
+    myfile.open("out/saida.txt");
+
     EI ei, ei_end;
     std::vector<Edge> output;
 
@@ -506,27 +619,27 @@ void Circuit::generate_output() {
         ne.u = ver_map[source(*ei, this->spanning)];
         ne.v = ver_map[target(*ei, this->spanning)];
 
-        if(std::find(output.begin(), output.end(), ne) == output.end())
+        if(std::find(output.begin(), output.end(), ne) == output.end()) {
             output.push_back(ne);
+            
+            // Se os 2 pertencem ao mesmo componente, não desenhar
+            if (std::find(comp_vertices.begin(), comp_vertices.end(), source(*ei, this->spanning)) == comp_vertices.end()) {
+
+
+                if (alive[source(*ei, this->spanning)] && alive[target(*ei, this->spanning)]){
+                    if (ne.u[2] != ne.v[2]) { // Via
+                        myfile << "Via V" << ne.u[2] << " (" << ne.u[0] << "," << ne.u[1] << ")\n";
+                    }
+                    else if (ne.u[0] == ne.v[0]) { // Vertical
+                        myfile << "V-line M" << ne.u[2] << " (" << ne.u[0] << "," << ne.u[1] << ") (" << ne.v[0] << "," << ne.v[1] << ")" << "\n";
+                    }
+                    else { // Horizontal
+                        myfile << "H-line M" << ne.u[2] << " (" << ne.u[0] << "," << ne.u[1] << ") (" << ne.v[0] << "," << ne.v[1] << ")" << "\n";
+                    }
+                }
+            }
+        }
     }
-
-    std::string out;
-    std::ofstream myfile;
-    myfile.open("out/saida.txt");
-
-
-    for (Edge e : output) {
-        if (e.u[2] != e.v[2]) { // Via
-            myfile << "Via V" << e.u[2] << " (" << e.u[0] << "," << e.u[1] << ")\n";
-        }
-        else if (e.u[0] == e.v[0]) { // Vertical
-            myfile << "V-line M" << e.u[2] << " (" << e.u[0] << "," << e.u[1] << ") (" << e.v[0] << "," << e.v[1] << ")" << "\n";
-        }
-        else { // Horizontal
-            myfile << "H-line M" << e.u[2] << " (" << e.u[0] << "," << e.u[1] << ") (" << e.v[0] << "," << e.v[1] << ")" << "\n";
-        }
-    }
-
 }
 
 
@@ -548,7 +661,7 @@ void Circuit::connect_all_components() {
             for (std::map<int, Layer>::iterator jt = it; jt != Layers.end(); ++jt) {
                 for (std::vector<Shape>::iterator sij = siN; sij != jt->second.Components.end(); ++sij) { // Itera nos shapes das camadas
                     // Adicionar caminho (si <--> sij)
-                    
+
                 }
                 ++jt;
                 siN = jt->second.Components.begin();

@@ -1,6 +1,6 @@
 ViaCost = 20
 Spacing = 5
-Boundary = (0,0) (15,15)
+Boundary = (0,0) (150,150)
 #MetalLayers = 2
 #RoutedShapes = 2
 #RoutedVias = 1

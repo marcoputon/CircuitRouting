@@ -1,4 +1,6 @@
 import random
+import os
+
 
 def generate_case(path, quant):
     f = open(path)
@@ -42,11 +44,12 @@ IN_PATH  = "../case1"  # (1503, 3, 414)
 IN_PATH  = "../case2"  # (4518, 34, 4773)
 IN_PATH  = "../case3"  # (97146, 52, 79012)
 '''
-MAX_SHAPES = 5
+MAX_SHAPES = 200
 MAX_VIAS = 3
-MAX_OBSTACLES = 5
+MAX_OBSTACLES = 200
 
 s = v = o = 1
+log = ""
 for i in range(max([MAX_SHAPES, MAX_VIAS, MAX_OBSTACLES])):
     new_case = generate_case(IN_PATH, (s, v, o))
 
@@ -54,6 +57,21 @@ for i in range(max([MAX_SHAPES, MAX_VIAS, MAX_OBSTACLES])):
     f = open(path, 'w')
     f.write(new_case)
     f.close()
+    # ./bi1st ../cases/case-3 no
+
+    log += path + "\n"
+    os.system('../../src/bi1st ./' + path + ' no > result.log')
+    f = open("result.log")
+    ind = 0
+    for i in f:
+        if ind == 11:
+            log += "pontos_hanan:" + i.split(": ")[1]
+        elif ind == 12:
+            log += "pontos_gerados:" + i.split(": ")[1]
+        ind += 1
+    log += "\n"
+    f.close()
+
 
     if s <= MAX_SHAPES:
         s += 1
@@ -61,3 +79,7 @@ for i in range(max([MAX_SHAPES, MAX_VIAS, MAX_OBSTACLES])):
         v += 1
     if s <= MAX_OBSTACLES:
         o += 1
+
+f = open("result.log", "w")
+f.write(log)
+f.close()

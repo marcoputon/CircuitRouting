@@ -26,7 +26,10 @@ struct Circuit {
     void components_edges(vector<nEdge>*);
     void components_edges2(vector<nEdge>*);
     void componentEdges(Vertex, Vertex, Vertex, vector<nEdge>*);
-
+    std::set<Vertex> component_vertices(Vertex A, Vertex B, Vertex C);
+    void components_vertices(set<Vertex> *);
+    bool remove (int n);
+    bool isComponent (V n);
     void remove_collision_with_obstacles(Set_Pair);
     void convert_to_boost();
     void connect_all_components();

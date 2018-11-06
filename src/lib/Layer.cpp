@@ -56,6 +56,11 @@ void Layer::move_obstacles_points() {
         Obstacles.at(i).B = {obs.B[0] + 1, obs.B[1] + 1, obs.B[2]};
         Obstacles.at(i).C = {obs.C[0] + 1, obs.C[1] - 1, obs.C[2]};
         Obstacles.at(i).D = {obs.D[0] - 1, obs.D[1] - 1, obs.D[2]};
+
+        if (Obstacles.at(i).A[0] < 0 || Obstacles.at(i).D[0] < 0 ||
+            Obstacles.at(i).C[1] < 0 || Obstacles.at(i).D[1] < 0) {
+            Obstacles.erase(Obstacles.begin() + i);
+        }
     }
 }
 

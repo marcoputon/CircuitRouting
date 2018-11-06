@@ -1,0 +1,10 @@
+ViaCost = 10
+Spacing = 8
+Boundary = (0,0) (7000,3000)
+#MetalLayers = 3
+#RoutedShapes = 1
+#RoutedVias = 1
+#Obstacles = 1
+RoutedShape M3 (3957,2595) (4022,2762)
+RoutedVia V1 (4861,2421)
+Obstacle M3 (6369,296) (6586,365)
