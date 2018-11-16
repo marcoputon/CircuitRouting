@@ -44,9 +44,9 @@ IN_PATH  = "../case1"  # (1503, 3, 414)
 IN_PATH  = "../case2"  # (4518, 34, 4773)
 IN_PATH  = "../case3"  # (97146, 52, 79012)
 '''
-MAX_SHAPES = 200
+MAX_SHAPES = 50
 MAX_VIAS = 3
-MAX_OBSTACLES = 200
+MAX_OBSTACLES = 50
 
 s = v = o = 1
 log = ""
@@ -61,14 +61,31 @@ for i in range(max([MAX_SHAPES, MAX_VIAS, MAX_OBSTACLES])):
 
     log += path + "\n"
     os.system('../../src/bi1st ./' + path + ' no > result.log')
+    os.system('../../src/eval_3 ./' + path + ' ../../src/out/saida.txt > result_eval.log')
+
     f = open("result.log")
+    f2 = open("result_eval.log")
+
     ind = 0
-    for i in f:
+    for j in f:
         if ind == 11:
-            log += "pontos_hanan:" + i.split(": ")[1]
+            log += "pontos_hanan:" + j.split(": ")[1]
         elif ind == 12:
-            log += "pontos_gerados:" + i.split(": ")[1]
+            log += "pontos_gerados:" + j.split(": ")[1]
+            break
         ind += 1
+
+    ind = 0
+    for j in f2:
+        if ind == 6:
+            print(j, path, i)
+            try:
+                log += "custo:" + j.split(" = ")[1]
+            except:
+                log += "custo:" + "-1\n"
+            break
+        ind += 1
+
     log += "\n"
     f.close()
 

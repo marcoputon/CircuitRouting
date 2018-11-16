@@ -346,6 +346,7 @@ void Circuit::spanning_tree(bool gen_img) {
 
 }
 
+
 std::set<Vertex> Circuit::component_vertices (Vertex A, Vertex B, Vertex C) {
     std::set<int> X, Y;
     std::set<Vertex> subV;
@@ -371,6 +372,7 @@ std::set<Vertex> Circuit::component_vertices (Vertex A, Vertex B, Vertex C) {
     return subV;
 }
 
+
 void Circuit::components_vertices(std::set<Vertex> * c_vertices) {
     //std::cout << "components_verticeSJHAGJDGHKJASDHs\n";
     // std::set<Vertex> c_vertices;
@@ -385,6 +387,7 @@ void Circuit::components_vertices(std::set<Vertex> * c_vertices) {
     //std::cout << c_vertices.size() << "\n";
     // return c_vertices;
 }
+
 
 void Circuit::close_component(Vertex A, Vertex B, Vertex C) {
     std::set<int> X, Y;
@@ -461,6 +464,7 @@ std::set<Vertex> comp_vertices;
 bool Circuit::isComponent (V n) {
     return comp_vertices.find(ver_map[n]) != comp_vertices.end();
 }
+
 
 bool Circuit::remove (int n) {
     //std::cout << "remove\n";
@@ -621,7 +625,7 @@ void Circuit::generate_output() {
 
         if(std::find(output.begin(), output.end(), ne) == output.end()) {
             output.push_back(ne);
-            
+
             // Se os 2 pertencem ao mesmo componente, não desenhar
             if (std::find(comp_vertices.begin(), comp_vertices.end(), source(*ei, this->spanning)) == comp_vertices.end()) {
 

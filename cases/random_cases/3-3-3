@@ -5,12 +5,12 @@ Boundary = (0,0) (7000,3000)
 #RoutedShapes = 3
 #RoutedVias = 3
 #Obstacles = 3
-RoutedShape M1 (919,2189) (1037,2304)
-RoutedShape M3 (774,696) (837,740)
-RoutedShape M1 (4106,2472) (4147,2538)
+RoutedShape M1 (4360,1958) (4443,1971)
+RoutedShape M1 (5429,2075) (5555,2228)
+RoutedShape M3 (4666,1452) (4810,1680)
 RoutedVia V1 (4861,2421)
 RoutedVia V1 (648,1955)
 RoutedVia V1 (447,1411)
-Obstacle M2 (1566,1413) (1793,1616)
-Obstacle M1 (1658,1064) (1873,1168)
-Obstacle M2 (3448,1403) (3681,1545)
+Obstacle M3 (5932,233) (6293,369)
+Obstacle M3 (4244,1547) (4264,1625)
+Obstacle M3 (6508,1999) (6768,2123)
