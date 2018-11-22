@@ -12,5 +12,6 @@ struct Shape {
 
     bool point_collision(Vertex);
     bool collide_with_edge(Edge);
+    bool collide_edge_with_vertex(Vertex);
     void draw();
 };

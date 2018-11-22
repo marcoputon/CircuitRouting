@@ -14,11 +14,13 @@ struct Circuit {
     Set_Pair XY;
     std::map<Vertex, V> rev_map;
     std::map<V, Vertex> ver_map;
+    int sub_grid_size;
 
 
     void input_to_objects(string);
     void move_obstacles_points();
     void generate_hanan_grid(bool);
+    void generate_spanning_grid(bool);
     void spanning_tree(bool);
     void remove_one_degree_vertices();
     void close_component(Vertex, Vertex, Vertex);

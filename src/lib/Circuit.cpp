@@ -192,6 +192,244 @@ void Circuit::generate_hanan_grid(bool gen_img) {
             }
         }
     }
+
+
+    /*
+        A-----B
+        |     |
+        |     |
+        P1----P2   <-- Remove arestas desse tipo
+        |     |
+        |     |
+        D-----C
+    */
+    std::cout << "removing side-to-side edges from obstacles\n";
+    for (std::set<int>::iterator z = Z.begin(); z != Z.end(); ++z) {
+        for (Shape o : Layers[*z].Obstacles) {
+            auto x1 = X.find(o.A[0]);
+            auto x2 = X.find(o.B[0]);
+            ++x1;
+
+            auto y1 = Y.find(o.A[1]);
+            auto y2 = Y.find(o.C[1]);
+            --y1;
+
+            if (*x1 == o.B[0]) {
+                auto yy = y1;
+                while (*yy != *y2) {
+                    auto nu = rev_map[{o.A[0], *yy, o.A[2]}];
+                    auto nv = rev_map[{o.B[0], *yy, o.A[2]}];
+                    boost::remove_edge(nu, nv, g.g);
+                    boost::remove_edge(nv, nu, g.g);
+                    --yy;
+                }
+            }
+
+            if (*y1 == o.C[1]) {
+                auto xx = x1;
+                while (*xx != *x2) {
+                    auto nu = rev_map[{*xx, o.A[1], o.A[2]}];
+                    auto nv = rev_map[{*xx, o.C[1], o.A[2]}];
+                    boost::remove_edge(nu, nv, g.g);
+                    boost::remove_edge(nv, nu, g.g);
+                    ++xx;
+                }
+            }
+        }
+    }
+
+    if (gen_img) to_dot(g.g);
+}
+
+
+void Circuit::generate_spanning_grid(bool gen_img) {
+    std::cout << "Generating spanning grid\n";
+
+
+
+
+    std::set<int> X;
+    std::set<int> Y;
+    std::set<int> Z;
+
+    std::vector<Vertex> vertices;
+    std::set<Edge> grid;
+
+    std::set<Vertex> vertices_set;
+
+    int z_coord = 1;
+
+
+    std::set<int> subGridX;
+    std::set<int> subGridY;
+    std::set<int> subGridZ;
+
+
+    std::cout << "  Getting coordinates\n";
+    for (std::map<int, Layer>::iterator it = Layers.begin(); it != Layers.end(); ++it) {
+        for (Shape c : it->second.Components) {
+            X.insert(c.A[0]);
+            Y.insert(c.A[1]);
+            X.insert(c.B[0]);
+            Y.insert(c.B[1]);
+            X.insert(c.C[0]);
+            Y.insert(c.C[1]);
+            X.insert(c.D[0]);
+            Y.insert(c.D[1]);
+        }
+        for (Shape o : it->second.Obstacles) {
+            X.insert(o.A[0]);
+            Y.insert(o.A[1]);
+            X.insert(o.B[0]);
+            Y.insert(o.B[1]);
+            X.insert(o.C[0]);
+            Y.insert(o.C[1]);
+            X.insert(o.D[0]);
+            Y.insert(o.D[1]);
+        }
+        for (Via v : it->second.Vias) {
+            X.insert(v.point[0]);
+            Y.insert(v.point[1]);
+        }
+        Z.insert(z_coord);
+        z_coord++;
+    }
+
+    this->XY = Set_Pair(X, Y);
+    g.g = Graph(X.size() * Y.size() * Z.size());
+
+
+    //std::cout << "\n\n\n\n\n\n\n";
+
+    std::cout << "  Creating vertices\n";
+    int v_num = 0;
+
+    std::map<std::pair<Vertex, Vertex>, std::set<Vertex>> subgrades;
+    std::set<int> subgradeX, subgradeY;
+
+    this->sub_grid_size = sqrt( (this->N_RoutedShapes + this->N_Obstacles) * 4 + this->N_RoutedVias );
+
+    //std::cout << "this->sub_grid_size: " << this->sub_grid_size << "\n";
+    //std::cout << "(int)X.size(): " << (int)Y.size() << "\n";
+    //std::cout << "(int)Y.size(): " << (int)X.size() << "\n";
+    int i, j, k;
+    for (k = 0; k < (int)Z.size(); k++) {
+        for (i = 0; i < (int)X.size() - 1; i += this->sub_grid_size - 1) {
+            for (j = 0; j < (int)Y.size() - 1; j += this->sub_grid_size - 1) {
+                int iMais = (i + this->sub_grid_size - 1);
+                int jMais = (j + this->sub_grid_size - 1);
+
+                if ((i + this->sub_grid_size - 1) > ((int)X.size() - 1))
+                    iMais = ((int)X.size() - 1);
+                if ((j + this->sub_grid_size - 1) > ((int)Y.size() - 1))
+                    jMais = ((int)Y.size() - 1);
+
+                std::set<Vertex> subset;
+                std::pair<Vertex, Vertex> key ({i, jMais, k}, {iMais, j, k});
+                subgrades[key] = subset;
+                subgradeX.insert({i, iMais});
+                subgradeY.insert({j, jMais});
+
+
+                // 4 pontos que formam cada subgrade
+                /*
+                std::cout << ":" << i << "," << j << ":\n";
+                std::cout << ":" << iMais << "-" << j << ":\n";
+                std::cout << ":" << i << "-" << jMais << ":\n";
+                std::cout << ":" << iMais << "-" << jMais << ":\n\n";
+                */
+
+                /*std::set<int>::iterator x_it = X.begin();
+                std::set<int>::iterator y_it = Y.begin();
+                std::advance(x_it, i);
+                std::advance(y_it, j);
+
+                //std::cout << "Gerando subgrade\n" << *x_it << "-" << *y_it << "\n";
+                int deX = iMais - i + 1;
+                int deY = jMais - j + 1;
+                while (deX--) {
+                    while (deY--) {
+                        //std::cout << "  " << *x_it << "-" << *y_it << "\n";
+                        ++y_it;
+                    }
+                    y_it = Y.begin();
+                    std::advance(y_it, j);
+                    deY = jMais - j + 1;
+                    ++x_it;
+                }*/
+                //std::cout << "\n\n";
+            }
+        }
+    }
+
+    std::map<std::pair<Vertex, Vertex>, std::set<Vertex>>::iterator it;
+    for (it = subgrades.begin(); it != subgrades.end(); it++) {
+        std::cout << "(" << it->first.first[0] << ", " << it->first.first[1] << ", " << it->first.first[2] << ") - ";
+        std::cout << "(" << it->first.second[0] << ", " << it->first.second[1] << ", " << it->first.second[2] << ")\n";
+    }
+
+    for (int i : subgradeX) {
+        std::cout << i << "\n";
+    }
+    std::cout << "\n";
+    for (int i : subgradeY) {
+        std::cout << i << "\n";
+    }
+
+    //std::cout << "\n\n\n";
+
+
+
+
+    //Vertices
+    for (std::set<int>::iterator x = X.begin(); x != X.end(); ++x) {
+        for (std::set<int>::iterator y = Y.begin(); y != Y.end(); ++y) {
+            for (std::set<int>::iterator z = Z.begin(); z != Z.end(); ++z) {
+                bool flag = false;
+                for (Shape o : Layers[*z].Obstacles) {
+                    if (point_collide_rect({*x,*y,*z}, o)) {
+                        flag = true;
+                        break;
+                    }
+                }
+                if (!flag) {
+                    V vd = v_num;
+                    v_num++;
+                    rev_map[{*x,*y,*z}] = vd;
+                    ver_map[vd] = {*x,*y,*z};
+                }
+            }
+        }
+    }
+
+    std::cout << "  Creating edges\n";
+    //Arestas
+    for (std::set<int>::iterator x = X.begin(); x != X.end(); ++x) {
+        for (std::set<int>::iterator y = Y.begin(); y != Y.end(); ++y) {
+            for (std::set<int>::iterator z = Z.begin(); z != Z.end(); ++z) {
+                std::set<int>::iterator xp = x;
+                std::set<int>::iterator yp = y;
+                std::set<int>::iterator zp = z;
+
+                ++xp;
+                ++yp;
+                ++zp;
+
+                if (xp != X.end()){
+                    if ((rev_map.find({*x,*y,*z}) != rev_map.end()) && (rev_map.find({*xp,*y,*z}) != rev_map.end()))
+                        boost::add_edge(rev_map[{*x,*y,*z}], rev_map[{*xp,*y,*z}], euclidian_dist({*x,*y,*z}, {*xp,*y,*z}), g.g);
+                }
+                if (yp != Y.end()){
+                    if ((rev_map.find({*x,*y,*z}) != rev_map.end()) && (rev_map.find({*x,*yp,*z}) != rev_map.end()))
+                        boost::add_edge(rev_map[{*x,*y,*z}], rev_map[{*x,*yp,*z}], euclidian_dist({*x,*y,*z}, {*x,*yp,*z}), g.g);
+                }
+                if (zp != Z.end()){
+                    if ((rev_map.find({*x,*y,*z}) != rev_map.end()) && (rev_map.find({*x,*y,*zp}) != rev_map.end()))
+                        boost::add_edge(rev_map[{*x,*y,*z}], rev_map[{*x,*y,*zp}], euclidian_dist({*x,*y,*z}, {*x,*y,*zp}), g.g);
+                }
+            }
+        }
+    }
     if (gen_img) to_dot(g.g);
 }
 
@@ -627,7 +865,7 @@ void Circuit::generate_output() {
             output.push_back(ne);
 
             // Se os 2 pertencem ao mesmo componente, não desenhar
-            if (std::find(comp_vertices.begin(), comp_vertices.end(), source(*ei, this->spanning)) == comp_vertices.end()) {
+            //if (std::find(comp_vertices.begin(), comp_vertices.end(), source(*ei, this->spanning)) == comp_vertices.end()) {
 
 
                 if (alive[source(*ei, this->spanning)] && alive[target(*ei, this->spanning)]){
@@ -641,7 +879,7 @@ void Circuit::generate_output() {
                         myfile << "H-line M" << ne.u[2] << " (" << ne.u[0] << "," << ne.u[1] << ") (" << ne.v[0] << "," << ne.v[1] << ")" << "\n";
                     }
                 }
-            }
+            //}
         }
     }
 }
