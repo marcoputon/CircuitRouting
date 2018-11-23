@@ -15,8 +15,10 @@ struct Circuit {
     std::map<Vertex, V> rev_map;
     std::map<V, Vertex> ver_map;
     int sub_grid_size;
+    std::map<std::pair<Vertex, Vertex>, std::set<Vertex>> subgrades;
+    std::set<int> subgradeX, subgradeY;
 
-
+    void add_to_subgrids(Vertex);
     void input_to_objects(string);
     void move_obstacles_points();
     void generate_hanan_grid(bool);

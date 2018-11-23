@@ -242,11 +242,46 @@ void Circuit::generate_hanan_grid(bool gen_img) {
 }
 
 
+
+
+
+
+
+
+void Circuit::add_to_subgrids(Vertex p) {
+    for (auto x_it = this->subgradeX.begin(); x_it != this->subgradeX.end(); ++x_it) {
+        std::set<int>::iterator auxX = x_it;
+        if (++auxX == this->subgradeX.end()) {
+            break;
+        }
+        for (auto y_it = this->subgradeY.begin(); y_it != this->subgradeY.end(); ++y_it) {
+            std::set<int>::iterator auxY = y_it;
+            if (++auxY == this->subgradeY.end()) {
+                break;
+            }
+
+            std::cout << p[0] << ", " << p[1] << " - " << *x_it << " - " << *auxX << " - " << *y_it << " - " << *auxY << "\n";
+            if (p[0] >= *x_it && p[0] <= *auxX and
+                p[1] >= *y_it && p[1] <= *auxY) {
+                std::pair<Vertex, Vertex> subG ({*x_it, *auxY, 0}, {*auxX, *y_it, 0});
+                this->subgrades[subG].insert({p[0], p[1], 0});
+            }
+
+
+            std::cout << *x_it << "-" << *y_it << "\n";
+        }
+    }
+}
+
+
+
+
+
+
+
+
 void Circuit::generate_spanning_grid(bool gen_img) {
     std::cout << "Generating spanning grid\n";
-
-
-
 
     std::set<int> X;
     std::set<int> Y;
@@ -300,12 +335,8 @@ void Circuit::generate_spanning_grid(bool gen_img) {
 
 
     //std::cout << "\n\n\n\n\n\n\n";
-
     std::cout << "  Creating vertices\n";
-    int v_num = 0;
-
-    std::map<std::pair<Vertex, Vertex>, std::set<Vertex>> subgrades;
-    std::set<int> subgradeX, subgradeY;
+    //int v_num = 0;
 
     this->sub_grid_size = sqrt( (this->N_RoutedShapes + this->N_Obstacles) * 4 + this->N_RoutedVias );
 
@@ -316,22 +347,19 @@ void Circuit::generate_spanning_grid(bool gen_img) {
     for (k = 0; k < (int)Z.size(); k++) {
         for (i = 0; i < (int)X.size() - 1; i += this->sub_grid_size - 1) {
             for (j = 0; j < (int)Y.size() - 1; j += this->sub_grid_size - 1) {
+
+
+                //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> pegar o n-énsimo numero dos set ao invés de n;
+
                 int iMais = (i + this->sub_grid_size - 1);
                 int jMais = (j + this->sub_grid_size - 1);
 
-                if ((i + this->sub_grid_size - 1) > ((int)X.size() - 1))
+                if ((i + this->sub_grid_size - 1) > ((int)X.size() - 1)) {
                     iMais = ((int)X.size() - 1);
-                if ((j + this->sub_grid_size - 1) > ((int)Y.size() - 1))
+                }
+                if ((j + this->sub_grid_size - 1) > ((int)Y.size() - 1)) {
                     jMais = ((int)Y.size() - 1);
-
-                std::set<Vertex> subset;
-                std::pair<Vertex, Vertex> key ({i, jMais, k}, {iMais, j, k});
-                subgrades[key] = subset;
-                subgradeX.insert({i, iMais});
-                subgradeY.insert({j, jMais});
-
-
-                // 4 pontos que formam cada subgrade
+                }
                 /*
                 std::cout << ":" << i << "," << j << ":\n";
                 std::cout << ":" << iMais << "-" << j << ":\n";
@@ -339,98 +367,71 @@ void Circuit::generate_spanning_grid(bool gen_img) {
                 std::cout << ":" << iMais << "-" << jMais << ":\n\n";
                 */
 
-                /*std::set<int>::iterator x_it = X.begin();
-                std::set<int>::iterator y_it = Y.begin();
-                std::advance(x_it, i);
-                std::advance(y_it, j);
+                std::set<int>::iterator it_x, it_y;
+                int xx1, xx2, yy1, yy2;
 
-                //std::cout << "Gerando subgrade\n" << *x_it << "-" << *y_it << "\n";
-                int deX = iMais - i + 1;
-                int deY = jMais - j + 1;
-                while (deX--) {
-                    while (deY--) {
-                        //std::cout << "  " << *x_it << "-" << *y_it << "\n";
-                        ++y_it;
-                    }
-                    y_it = Y.begin();
-                    std::advance(y_it, j);
-                    deY = jMais - j + 1;
-                    ++x_it;
-                }*/
-                //std::cout << "\n\n";
+                it_x = X.begin();
+                std::advance(it_x, i);
+                xx1 = *it_x;
+
+                it_x = X.begin();
+                std::advance(it_x, iMais);
+                xx2 = *it_x;
+
+                it_y = Y.begin();
+                std::advance(it_y, j);
+                yy1 = *it_y;
+
+                it_y = Y.begin();
+                std::advance(it_y, jMais);
+                yy2 = *it_y;
+
+
+                std::set<Vertex> subset;
+
+                subset.insert({xx1, yy1, 0});
+                subset.insert({xx2, yy1, 0});
+                subset.insert({xx1, yy2, 0});
+                subset.insert({xx2, yy2, 0});
+                std::pair<Vertex, Vertex> key ({xx1, yy2, 0}, {xx2, yy1, 0});
+                this->subgrades[key] = subset;
+                this->subgradeX.insert({xx1, xx2});
+                this->subgradeY.insert({yy1, yy2});
             }
         }
     }
+
+
+    for (std::map<int, Layer>::iterator it = Layers.begin(); it != Layers.end(); ++it) {
+        for (Shape c : it->second.Components) {
+            add_to_subgrids(c.A);
+            add_to_subgrids(c.B);
+            add_to_subgrids(c.C);
+            add_to_subgrids(c.D);
+        }
+        for (Shape o : it->second.Obstacles) {
+            add_to_subgrids(o.A);
+            add_to_subgrids(o.B);
+            add_to_subgrids(o.C);
+            add_to_subgrids(o.D);
+        }
+        for (Via v : it->second.Vias) {
+            add_to_subgrids(v.point);
+        }
+    }
+
+
+
 
     std::map<std::pair<Vertex, Vertex>, std::set<Vertex>>::iterator it;
     for (it = subgrades.begin(); it != subgrades.end(); it++) {
         std::cout << "(" << it->first.first[0] << ", " << it->first.first[1] << ", " << it->first.first[2] << ") - ";
         std::cout << "(" << it->first.second[0] << ", " << it->first.second[1] << ", " << it->first.second[2] << ")\n";
-    }
-
-    for (int i : subgradeX) {
-        std::cout << i << "\n";
-    }
-    std::cout << "\n";
-    for (int i : subgradeY) {
-        std::cout << i << "\n";
-    }
-
-    //std::cout << "\n\n\n";
-
-
-
-
-    //Vertices
-    for (std::set<int>::iterator x = X.begin(); x != X.end(); ++x) {
-        for (std::set<int>::iterator y = Y.begin(); y != Y.end(); ++y) {
-            for (std::set<int>::iterator z = Z.begin(); z != Z.end(); ++z) {
-                bool flag = false;
-                for (Shape o : Layers[*z].Obstacles) {
-                    if (point_collide_rect({*x,*y,*z}, o)) {
-                        flag = true;
-                        break;
-                    }
-                }
-                if (!flag) {
-                    V vd = v_num;
-                    v_num++;
-                    rev_map[{*x,*y,*z}] = vd;
-                    ver_map[vd] = {*x,*y,*z};
-                }
-            }
+        for (auto p : it->second) {
+            std::cout << "(" << p[0] << ", " << p[1] << ", " << p[2] << ")\n";
         }
+        std::cout << "\n";
     }
-
-    std::cout << "  Creating edges\n";
-    //Arestas
-    for (std::set<int>::iterator x = X.begin(); x != X.end(); ++x) {
-        for (std::set<int>::iterator y = Y.begin(); y != Y.end(); ++y) {
-            for (std::set<int>::iterator z = Z.begin(); z != Z.end(); ++z) {
-                std::set<int>::iterator xp = x;
-                std::set<int>::iterator yp = y;
-                std::set<int>::iterator zp = z;
-
-                ++xp;
-                ++yp;
-                ++zp;
-
-                if (xp != X.end()){
-                    if ((rev_map.find({*x,*y,*z}) != rev_map.end()) && (rev_map.find({*xp,*y,*z}) != rev_map.end()))
-                        boost::add_edge(rev_map[{*x,*y,*z}], rev_map[{*xp,*y,*z}], euclidian_dist({*x,*y,*z}, {*xp,*y,*z}), g.g);
-                }
-                if (yp != Y.end()){
-                    if ((rev_map.find({*x,*y,*z}) != rev_map.end()) && (rev_map.find({*x,*yp,*z}) != rev_map.end()))
-                        boost::add_edge(rev_map[{*x,*y,*z}], rev_map[{*x,*yp,*z}], euclidian_dist({*x,*y,*z}, {*x,*yp,*z}), g.g);
-                }
-                if (zp != Z.end()){
-                    if ((rev_map.find({*x,*y,*z}) != rev_map.end()) && (rev_map.find({*x,*y,*zp}) != rev_map.end()))
-                        boost::add_edge(rev_map[{*x,*y,*z}], rev_map[{*x,*y,*zp}], euclidian_dist({*x,*y,*z}, {*x,*y,*zp}), g.g);
-                }
-            }
-        }
-    }
-    if (gen_img) to_dot(g.g);
 }
 
 
