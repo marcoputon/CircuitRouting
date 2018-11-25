@@ -30,6 +30,7 @@ struct Circuit {
     void components_edges(vector<nEdge>*);
     void components_edges2(vector<nEdge>*);
     void componentEdges(Vertex, Vertex, Vertex, vector<nEdge>*);
+    void componentEdgesSpanning(Vertex, Vertex, Vertex, vector<nEdge>*);
     std::set<Vertex> component_vertices(Vertex A, Vertex B, Vertex C);
     void components_vertices(set<Vertex> *);
     bool remove (int n);

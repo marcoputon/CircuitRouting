@@ -17,7 +17,7 @@ int main(int argc, char* argv[]){
     C.input_to_objects(argv[1]);
     C.move_obstacles_points();
     C.generate_spanning_grid(false);
-    C.generate_hanan_grid(true);
+    //C.generate_hanan_grid(false);
     //C.connect_all_components();
     C.spanning_tree(false);
     C.remove_one_degree_vertices();

@@ -260,23 +260,14 @@ void Circuit::add_to_subgrids(Vertex p) {
                 break;
             }
 
-            std::cout << p[0] << ", " << p[1] << " - " << *x_it << " - " << *auxX << " - " << *y_it << " - " << *auxY << "\n";
             if (p[0] >= *x_it && p[0] <= *auxX and
                 p[1] >= *y_it && p[1] <= *auxY) {
                 std::pair<Vertex, Vertex> subG ({*x_it, *auxY, 0}, {*auxX, *y_it, 0});
                 this->subgrades[subG].insert({p[0], p[1], 0});
             }
-
-
-            std::cout << *x_it << "-" << *y_it << "\n";
         }
     }
 }
-
-
-
-
-
 
 
 
@@ -293,7 +284,6 @@ void Circuit::generate_spanning_grid(bool gen_img) {
     std::set<Vertex> vertices_set;
 
     int z_coord = 1;
-
 
     std::set<int> subGridX;
     std::set<int> subGridY;
@@ -330,27 +320,18 @@ void Circuit::generate_spanning_grid(bool gen_img) {
         z_coord++;
     }
 
-    this->XY = Set_Pair(X, Y);
-    g.g = Graph(X.size() * Y.size() * Z.size());
+    //this->XY = Set_Pair(X, Y);
+    //g.g = Graph(X.size() * Y.size() * Z.size());
 
-
-    //std::cout << "\n\n\n\n\n\n\n";
     std::cout << "  Creating vertices\n";
-    //int v_num = 0;
 
     this->sub_grid_size = sqrt( (this->N_RoutedShapes + this->N_Obstacles) * 4 + this->N_RoutedVias );
+    std::cout << "( " << this->sub_grid_size << " )\n";
 
-    //std::cout << "this->sub_grid_size: " << this->sub_grid_size << "\n";
-    //std::cout << "(int)X.size(): " << (int)Y.size() << "\n";
-    //std::cout << "(int)Y.size(): " << (int)X.size() << "\n";
     int i, j, k;
     for (k = 0; k < (int)Z.size(); k++) {
         for (i = 0; i < (int)X.size() - 1; i += this->sub_grid_size - 1) {
             for (j = 0; j < (int)Y.size() - 1; j += this->sub_grid_size - 1) {
-
-
-                //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> pegar o n-énsimo numero dos set ao invés de n;
-
                 int iMais = (i + this->sub_grid_size - 1);
                 int jMais = (j + this->sub_grid_size - 1);
 
@@ -360,12 +341,6 @@ void Circuit::generate_spanning_grid(bool gen_img) {
                 if ((j + this->sub_grid_size - 1) > ((int)Y.size() - 1)) {
                     jMais = ((int)Y.size() - 1);
                 }
-                /*
-                std::cout << ":" << i << "," << j << ":\n";
-                std::cout << ":" << iMais << "-" << j << ":\n";
-                std::cout << ":" << i << "-" << jMais << ":\n";
-                std::cout << ":" << iMais << "-" << jMais << ":\n\n";
-                */
 
                 std::set<int>::iterator it_x, it_y;
                 int xx1, xx2, yy1, yy2;
@@ -385,7 +360,6 @@ void Circuit::generate_spanning_grid(bool gen_img) {
                 it_y = Y.begin();
                 std::advance(it_y, jMais);
                 yy2 = *it_y;
-
 
                 std::set<Vertex> subset;
 
@@ -421,16 +395,105 @@ void Circuit::generate_spanning_grid(bool gen_img) {
     }
 
 
+    std::set<Vertex> allVertices;
+    for (std::map<std::pair<Vertex, Vertex>, std::set<Vertex>>::iterator it = subgrades.begin(); it != subgrades.end(); ++it) {
+        std::set<int> subX;
+        std::set<int> subY;
 
-
-    std::map<std::pair<Vertex, Vertex>, std::set<Vertex>>::iterator it;
-    for (it = subgrades.begin(); it != subgrades.end(); it++) {
-        std::cout << "(" << it->first.first[0] << ", " << it->first.first[1] << ", " << it->first.first[2] << ") - ";
-        std::cout << "(" << it->first.second[0] << ", " << it->first.second[1] << ", " << it->first.second[2] << ")\n";
-        for (auto p : it->second) {
-            std::cout << "(" << p[0] << ", " << p[1] << ", " << p[2] << ")\n";
+        for (std::set<Vertex>::iterator set_it = it->second.begin(); set_it != it->second.end(); ++set_it) {
+            subX.insert((*set_it)[0]);
+            subY.insert((*set_it)[1]);
         }
-        std::cout << "\n";
+
+        //this->XY = Set_Pair(X, Y);
+        //g.g = Graph(X.size() * Y.size() * Z.size());
+
+        //std::cout << "  Creating vertices\n";
+        //Vertices
+        for (std::set<int>::iterator x = subX.begin(); x != subX.end(); ++x) {
+            for (std::set<int>::iterator y = subY.begin(); y != subY.end(); ++y) {
+                bool flag = false;
+                for (std::map<int, Layer>::iterator l_it = Layers.begin(); l_it != Layers.end(); ++l_it) {
+                    for (Shape o : l_it->second.Obstacles) {
+                        if (point_collide_rect({*x,*y, 0}, o)) {
+                            flag = true;
+                            break;
+                        }
+                    }
+                    if (flag) { break; }
+                }
+
+                if (!flag) {
+                    allVertices.insert({*x,*y,0});
+                }
+            }
+        }
+    }
+    this->XY = Set_Pair(X, Y);
+    g.g = Graph(X.size() * Y.size() * Z.size());
+    int v_num = 0;
+
+    std::cout << "Vertices\n";
+    for (auto i = allVertices.begin(); i != allVertices.end(); ++i) {
+        //iterar todas as camadas
+        for (std::set<int>::iterator z = Z.begin(); z != Z.end(); ++z) {
+            //adicionar os pontos
+            V vd = v_num;
+            v_num++;
+            rev_map[{(*i)[0],(*i)[1],*z}] = vd;
+            ver_map[vd] = {(*i)[0],(*i)[1],*z};
+            //print_v({(*i)[0],(*i)[1],*z});
+        }
+    }
+    std::cout << "Vertices\n";
+
+
+
+    std::cout << "  Creating edges\n";
+    //Arestas
+    for (std::set<int>::iterator z = Z.begin(); z != Z.end(); ++z) {
+        for (std::set<int>::iterator x = X.begin(); x != X.end(); ++x) {
+            for (std::set<int>::iterator y = Y.begin(); y != Y.end(); ++y) {
+                std::set<int>::iterator xp = x;
+                std::set<int>::iterator yp = y;
+                std::set<int>::iterator zp = z;
+
+                ++xp;
+                ++yp;
+                ++zp;
+
+                if (xp != X.end()){
+                    if ((rev_map.find({*x,*y,*z}) != rev_map.end()) && (rev_map.find({*xp,*y,*z}) != rev_map.end())) {
+                        boost::add_edge(rev_map[{*x,*y,*z}], rev_map[{*xp,*y,*z}], euclidian_dist({*x,*y,*z}, {*xp,*y,*z}), g.g);
+                        //print_v({*x,*y,*z});
+                        //print_v({*xp,*y,*z});
+                        //std::cout << "\n";
+                    }
+                }
+                if (yp != Y.end()){
+                    if ((rev_map.find({*x,*y,*z}) != rev_map.end()) && (rev_map.find({*x,*yp,*z}) != rev_map.end())) {
+                        boost::add_edge(rev_map[{*x,*y,*z}], rev_map[{*x,*yp,*z}], euclidian_dist({*x,*y,*z}, {*x,*yp,*z}), g.g);
+                        //print_v({*x,*y,*z});
+                        //print_v({*x,*yp,*z});
+                        //std::cout << "\n";
+                    }
+                }
+                if (zp != Z.end()){
+                    if ((rev_map.find({*x,*y,*z}) != rev_map.end()) && (rev_map.find({*x,*y,*zp}) != rev_map.end())){
+                        boost::add_edge(rev_map[{*x,*y,*z}], rev_map[{*x,*y,*zp}], euclidian_dist({*x,*y,*z}, {*x,*y,*zp}), g.g);
+                        //print_v({*x,*y,*z});
+                        //print_v({*x,*y,*zp});
+                        //std::cout << "\n";
+                    }
+                }
+            }
+        }
+    }
+
+/*
+*/
+    for (auto i = allVertices.begin(); i != allVertices.end(); ++i) {
+        //std::cout << (*i)[0] << ", " << (*i)[1] << "\n";
     }
 }
 
@@ -455,6 +518,89 @@ void Circuit::components_edges(vector<nEdge>* edges) {
 
         if (flag) {
             edges->emplace_back(source(*ei, this->g.g), target(*ei, this->g.g), boost::get(edge_weight, this->g.g, *ei));
+        }
+    }
+}
+
+
+void Circuit::componentEdgesSpanning(Vertex A, Vertex B, Vertex C, vector<nEdge>* edges) {
+    std::set<int> X, Y;
+
+    // subX
+    for (std::set<int>::iterator it = XY.first.find(A[0]); it != XY.first.find(B[0]); ++it) {
+        X.insert(*it);
+    }
+    X.insert(B[0]);
+    // subY
+    for (std::set<int>::iterator it = XY.second.find(C[1]); it != XY.second.find(B[1]); ++it) {
+        Y.insert(*it);
+    }
+    Y.insert(B[1]);
+
+
+    // Adiciona as arestas verticais
+    for (std::set<int>::iterator it_x = X.begin(); it_x != X.end(); ++it_x) {
+        for (std::set<int>::iterator it_y = Y.begin(); it_y != Y.end(); ++it_y) {
+
+            // Testar se o primeiro ponto da aresta existe
+            while (rev_map.find({*it_x, *it_y, A[2]}) == rev_map.end() && it_y != Y.end()) {
+                ++it_y;
+            }
+            if (it_y == Y.end()) {
+                break;
+            }
+            std::set<int>::iterator it_yp = it_y;
+            ++it_yp;
+
+
+            // Testar se o segundo ponto da aresta existe
+            while (rev_map.find({*it_x, *it_yp, A[2]}) == rev_map.end() && it_yp != Y.end()) {
+                ++it_yp;
+            }
+            if (it_y == Y.end()) {
+                break;
+            }
+
+            if (it_yp == Y.end()) break;
+
+            Vertex u = {*it_x, *it_y, A[2]};
+            Vertex v = {*it_x, *it_yp, A[2]};
+
+            nEdge ne = nEdge(this->rev_map[u], this->rev_map[v], euclidian_dist(u, v));
+            if(std::find(edges->begin(), edges->end(), ne) == edges->end())
+                edges->push_back(ne);
+        }
+    }
+
+    // Adiciona as arestas horizontais
+    for (std::set<int>::iterator it_y = Y.begin(); it_y != Y.end(); ++it_y) {
+        for (std::set<int, bool>::iterator it_x = X.begin(); it_x != X.end(); ++it_x) {
+            // Testar se o primeiro ponto da aresta existe
+            while (rev_map.find({*it_x, *it_y, A[2]}) == rev_map.end() && it_x != X.end()) {
+                ++it_x;
+            }
+            if (it_x == X.end()) {
+                break;
+            }
+            std::set<int>::iterator it_xp = it_x;
+            ++it_xp;
+
+            // Testar se o segundo ponto da aresta existe
+            while (rev_map.find({*it_xp, *it_y, A[2]}) == rev_map.end() && it_xp != X.end()) {
+                ++it_xp;
+            }
+            if (it_x == X.end()) {
+                break;
+            }
+
+            if (it_xp == X.end()) break;
+
+            Vertex u = {*it_x, *it_y, A[2]};
+            Vertex v = {*it_xp, *it_y, A[2]};
+
+            nEdge ne = nEdge(this->rev_map[u], this->rev_map[v], euclidian_dist(u, v));
+            if(std::find(edges->begin(), edges->end(), ne) == edges->end())
+                edges->push_back(ne);
         }
     }
 }
@@ -511,7 +657,7 @@ void Circuit::componentEdges(Vertex A, Vertex B, Vertex C, vector<nEdge>* edges)
 void Circuit::components_edges2(vector<nEdge>* edges) {
     for (std::map<int, Layer>::iterator it = Layers.begin(); it != Layers.end(); ++it) {
         for (Shape c : it->second.Components) {
-            componentEdges(c.A, c.B, c.C, edges);
+            componentEdgesSpanning(c.A, c.B, c.C, edges);
         }
     }
 }
@@ -526,9 +672,10 @@ void Circuit::spanning_tree(bool gen_img) {
     vector<nEdge> components2;
 
     std::cout << "  Getting component edges\n";
-    components_edges(&components);
-    /*components_edges2(&components2);
-    std::cout << components.size() << " - " << components2.size() << "\n";
+    //components_edges(&components);
+    components_edges2(&components);
+
+    /*std::cout << components.size() << " - " << components2.size() << "\n";
 
 
     for (int i = 0; i < components.size(); i++) {
