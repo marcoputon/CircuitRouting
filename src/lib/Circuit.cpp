@@ -546,9 +546,44 @@ void Circuit::generate_spanning_grid(bool gen_img) {
     }
 
 */
-    for (auto i = allVertices.begin(); i != allVertices.end(); ++i) {
-        //std::cout << (*i)[0] << ", " << (*i)[1] << "\n";
+
+std::cout << "removing side-to-side edges from obstacles\n";
+for (std::set<int>::iterator z = Z.begin(); z != Z.end(); ++z) {
+    for (Shape o : Layers[*z].Obstacles) {
+        auto x1 = X.find(o.A[0]);
+        auto x2 = X.find(o.B[0]);
+        ++x1;
+
+        auto y1 = Y.find(o.A[1]);
+        auto y2 = Y.find(o.C[1]);
+        --y1;
+
+        if (*x1 == o.B[0]) {
+            auto yy = y1;
+            while (*yy != *y2) {
+                auto nu = rev_map[{o.A[0], *yy, o.A[2]}];
+                auto nv = rev_map[{o.B[0], *yy, o.A[2]}];
+                boost::remove_edge(nu, nv, g.g);
+                boost::remove_edge(nv, nu, g.g);
+                --yy;
+            }
+        }
+
+        if (*y1 == o.C[1]) {
+            auto xx = x1;
+            while (*xx != *x2) {
+                auto nu = rev_map[{*xx, o.A[1], o.A[2]}];
+                auto nv = rev_map[{*xx, o.C[1], o.A[2]}];
+                boost::remove_edge(nu, nv, g.g);
+                boost::remove_edge(nv, nu, g.g);
+                ++xx;
+            }
+        }
     }
+}
+    //for (auto i = allVertices.begin(); i != allVertices.end(); ++i) {
+        //std::cout << (*i)[0] << ", " << (*i)[1] << "\n";
+    //}
 }
 
 
@@ -726,15 +761,16 @@ void Circuit::spanning_tree(bool gen_img) {
     vector<nEdge> components2;
 
     std::cout << "  Getting component edges\n";
-    //components_edges(&components);
+    components_edges(&components2);
     components_edges2(&components);
 
-    /*std::cout << components.size() << " - " << components2.size() << "\n";
+    std::cout << components.size() << " - " << components2.size() << "\n";
 
 
     for (int i = 0; i < components.size(); i++) {
         std::cout << components[i].u  << "<->" << components[i].v << ": " << components[i].w << " / " << components2[i].u  << "<->" << components2[i].v << ": " << components2[i].w << "\n";
     }
+    /*
     */
     std::cout << "  Finding spanning tree\n";
     vector<nEdge> kruskal = mst.compute(1, components);
