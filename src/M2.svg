@@ -1,13 +1,19 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="7000" height="3000">
+<svg xmlns="http://www.w3.org/2000/svg" width="150" height="150">
 <marker xmlns="http://www.w3.org/2000/svg" id="lineEnd" viewBox="0 0 10 10" refX="5" refY="5" markerUnits="strokeWidth" markerWidth="4" markerHeight="3" orient="auto">
 <rect x="0" y="0" width="10" height="10" fill="red" />
 </marker>
-<rect x="0" y="0" width="7000" height="3000" style="fill:white;stroke:black;stroke-width:1;fill-opacity:0;stroke-opacity:0.6" />
-<circle cx="4861" cy="579" r="10" style="fill:blue;stroke:blue;stroke-width:3;fill-opacity:0.1;stroke-opacity:0.8" />
-<circle cx="648" cy="1045" r="10" style="fill:blue;stroke:blue;stroke-width:3;fill-opacity:0.1;stroke-opacity:0.8" />
-<circle cx="447" cy="1589" r="10" style="fill:blue;stroke:blue;stroke-width:3;fill-opacity:0.1;stroke-opacity:0.8" />
-<circle cx="4861" cy="1042" r="10" style="fill:orange;stroke:orange;stroke-width:3;fill-opacity:0.1;stroke-opacity:0.8" />
-<circle cx="5555" cy="1042" r="10" style="fill:orange;stroke:orange;stroke-width:3;fill-opacity:0.1;stroke-opacity:0.8" />
-<line x1="4861" y1="1042" x2="5429" y2="1042" marker-end="url(#lineEnd)" marker-start="url(#lineEnd)" style="stroke:red;stroke-width:3;stroke-opacity:0.8" />
-<line x1="5429" y1="1042" x2="5555" y2="1042" marker-end="url(#lineEnd)" marker-start="url(#lineEnd)" style="stroke:red;stroke-width:3;stroke-opacity:0.8" />
+<rect x="0" y="0" width="150" height="150" style="fill:white;stroke:black;stroke-width:1;fill-opacity:0;stroke-opacity:0.6" />
+<rect x="100" y="70" width="20" height="50" style="fill:blue;stroke:black;stroke-width:1;fill-opacity:0.2;stroke-opacity:0.6" />
+<rect x="70" y="60" width="10" height="80" style="fill:gray;stroke:black;stroke-width:1;fill-opacity:0.2;stroke-opacity:0.6" />
+<circle cx="110" cy="50" r="10" style="fill:blue;stroke:blue;stroke-width:3;fill-opacity:0.1;stroke-opacity:0.8" />
+<circle cx="10" cy="80" r="10" style="fill:orange;stroke:orange;stroke-width:3;fill-opacity:0.1;stroke-opacity:0.8" />
+<line x1="100" y1="120" x2="100" y2="70" marker-end="url(#lineEnd)" marker-start="url(#lineEnd)" style="stroke:red;stroke-width:3;stroke-opacity:0.8" />
+<line x1="120" y1="120" x2="120" y2="70" marker-end="url(#lineEnd)" marker-start="url(#lineEnd)" style="stroke:red;stroke-width:3;stroke-opacity:0.8" />
+<line x1="100" y1="120" x2="120" y2="120" marker-end="url(#lineEnd)" marker-start="url(#lineEnd)" style="stroke:red;stroke-width:3;stroke-opacity:0.8" />
+<line x1="100" y1="70" x2="110" y2="70" marker-end="url(#lineEnd)" marker-start="url(#lineEnd)" style="stroke:red;stroke-width:3;stroke-opacity:0.8" />
+<line x1="110" y1="70" x2="120" y2="70" marker-end="url(#lineEnd)" marker-start="url(#lineEnd)" style="stroke:red;stroke-width:3;stroke-opacity:0.8" />
+<line x1="10" y1="120" x2="50" y2="120" marker-end="url(#lineEnd)" marker-start="url(#lineEnd)" style="stroke:red;stroke-width:3;stroke-opacity:0.8" />
+<line x1="10" y1="120" x2="10" y2="80" marker-end="url(#lineEnd)" marker-start="url(#lineEnd)" style="stroke:red;stroke-width:3;stroke-opacity:0.8" />
+<line x1="69" y1="120" x2="100" y2="120" marker-end="url(#lineEnd)" marker-start="url(#lineEnd)" style="stroke:red;stroke-width:3;stroke-opacity:0.8" />
+<line x1="50" y1="120" x2="69" y2="120" marker-end="url(#lineEnd)" marker-start="url(#lineEnd)" style="stroke:red;stroke-width:3;stroke-opacity:0.8" />
 </svg>

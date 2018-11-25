@@ -445,11 +445,66 @@ void Circuit::generate_spanning_grid(bool gen_img) {
             //print_v({(*i)[0],(*i)[1],*z});
         }
     }
-    std::cout << "Vertices\n";
+
+
+
 
 
 
     std::cout << "  Creating edges\n";
+    for (std::map<std::pair<Vertex, Vertex>, std::set<Vertex>>::iterator it = subgrades.begin(); it != subgrades.end(); ++it) {
+        std::set<int> sgX, sgY;
+        for (std::set<Vertex>::iterator set_it = it->second.begin(); set_it != it->second.end(); ++set_it) {
+            sgX.insert((*set_it)[0]);
+            sgY.insert((*set_it)[1]);
+        }
+
+        // Itera em Z
+        for (std::set<int>::iterator z = Z.begin(); z != Z.end(); ++z) {
+            for (std::set<int>::iterator x = sgX.begin(); x != sgX.end(); ++x) {
+                for (std::set<int>::iterator y = sgY.begin(); y != sgY.end(); ++y) {
+                    std::set<int>::iterator xp = x;
+                    std::set<int>::iterator yp = y;
+                    std::set<int>::iterator zp = z;
+
+                    ++xp;
+                    ++yp;
+                    ++zp;
+
+                    if (xp != sgX.end()){
+                        if ((rev_map.find({*x,*y,*z}) != rev_map.end()) && (rev_map.find({*xp,*y,*z}) != rev_map.end())) {
+                            boost::add_edge(rev_map[{*x,*y,*z}], rev_map[{*xp,*y,*z}], euclidian_dist({*x,*y,*z}, {*xp,*y,*z}), g.g);
+                            //print_v({*x,*y,*z});
+                            //print_v({*xp,*y,*z});
+                            //std::cout << "\n";
+                        }
+                    }
+                    if (yp != sgY.end()){
+                        if ((rev_map.find({*x,*y,*z}) != rev_map.end()) && (rev_map.find({*x,*yp,*z}) != rev_map.end())) {
+                            boost::add_edge(rev_map[{*x,*y,*z}], rev_map[{*x,*yp,*z}], euclidian_dist({*x,*y,*z}, {*x,*yp,*z}), g.g);
+                            //print_v({*x,*y,*z});
+                            //print_v({*x,*yp,*z});
+                            //std::cout << "\n";
+                        }
+                    }
+                    if (zp != Z.end()){
+                        if ((rev_map.find({*x,*y,*z}) != rev_map.end()) && (rev_map.find({*x,*y,*zp}) != rev_map.end())){
+                            boost::add_edge(rev_map[{*x,*y,*z}], rev_map[{*x,*y,*zp}], euclidian_dist({*x,*y,*z}, {*x,*y,*zp}), g.g);
+                            //print_v({*x,*y,*z});
+                            //print_v({*x,*y,*zp});
+                            //std::cout << "\n";
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+
+
+
+
+    /*
     //Arestas
     for (std::set<int>::iterator z = Z.begin(); z != Z.end(); ++z) {
         for (std::set<int>::iterator x = X.begin(); x != X.end(); ++x) {
@@ -490,7 +545,6 @@ void Circuit::generate_spanning_grid(bool gen_img) {
         }
     }
 
-/*
 */
     for (auto i = allVertices.begin(); i != allVertices.end(); ++i) {
         //std::cout << (*i)[0] << ", " << (*i)[1] << "\n";
