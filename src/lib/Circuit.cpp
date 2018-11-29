@@ -662,8 +662,8 @@ void Circuit::componentEdgesSpanning(Vertex A, Vertex B, Vertex C, vector<nEdge>
     }
 
     // Adiciona as arestas horizontais
-    for (std::set<int>::iterator it_y = Y.begin(); it_y != Y.end(); ++it_y) {
-        for (std::set<int, bool>::iterator it_x = X.begin(); it_x != X.end(); ++it_x) {
+    for (auto it_y = Y.begin(); it_y != Y.end(); ++it_y) {
+        for (auto it_x = X.begin(); it_x != X.end(); ++it_x) {
             // Testar se o primeiro ponto da aresta existe
             while (rev_map.find({*it_x, *it_y, A[2]}) == rev_map.end() && it_x != X.end()) {
                 ++it_x;
@@ -726,9 +726,9 @@ void Circuit::componentEdges(Vertex A, Vertex B, Vertex C, vector<nEdge>* edges)
     }
 
     // Adiciona as arestas horizontais
-    for (std::set<int>::iterator it_y = Y.begin(); it_y != Y.end(); ++it_y) {
-        for (std::set<int, bool>::iterator it_x = X.begin(); it_x != X.end(); ++it_x) {
-            std::set<int, bool>::iterator it_xp = it_x;
+    for (auto it_y = Y.begin(); it_y != Y.end(); ++it_y) {
+        for (auto it_x = X.begin(); it_x != X.end(); ++it_x) {
+            auto it_xp = it_x;
             ++it_xp;
             if (it_xp == X.end()) break;
 
@@ -767,7 +767,7 @@ void Circuit::spanning_tree(bool gen_img) {
     std::cout << components.size() << " - " << components2.size() << "\n";
 
 
-    for (int i = 0; i < components.size(); i++) {
+    for (unsigned i = 0; i < components.size(); i++) {
         std::cout << components[i].u  << "<->" << components[i].v << ": " << components[i].w << " / " << components2[i].u  << "<->" << components2[i].v << ": " << components2[i].w << "\n";
     }
     /*
@@ -896,8 +896,8 @@ void Circuit::close_component(Vertex A, Vertex B, Vertex C) {
 
     // Adiciona as arestas horizontais
     for (std::set<int>::iterator it_y = Y.begin(); it_y != Y.end(); ++it_y) {
-        for (std::set<int, bool>::iterator it_x = X.begin(); it_x != X.end(); ++it_x) {
-            std::set<int, bool>::iterator it_xp = it_x;
+        for (auto it_x = X.begin(); it_x != X.end(); ++it_x) {
+            auto it_xp = it_x;
             ++it_xp;
             if (it_xp == X.end()) break;
 
